@@ -19,3 +19,6 @@ class Company:
     ceo                    = ''
     website                = ''
     data_site              = ''
+    image1_suffix          = '历年营收与利润'
+    image2_suffix          = '历年排名'
+    image3_suffix          = '历年总资产'
