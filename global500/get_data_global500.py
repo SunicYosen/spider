@@ -5,22 +5,22 @@ Func: Get data of global-500
 from lxml import etree
 import requests
 import time
-import get_url
+from get_url import get_url_global500
 
 from company import Company
 
 def get_data_global500(root_url):
-    numbers      = 500
-    index        = 0
-    company_list = []
-    company_urls = get_url.get_url_global500(root_url, numbers)
-    time_begin   = time.time()
+    numbers           = 500
+    index             = 0
+    company_list      = []
+    company_urls,name = get_url_global500(root_url, numbers)
+    time_begin        = time.time()
 
     for company_url in company_urls:
         index     = index + 1
         duration  = round(time.time() - time_begin, 2)
-        remaining = round(duration * 500 / (index) - duration, 2)
-        print("[+] Getting Data :{}/500，Cost Time: {}s， Remainimg: {}s".format(index, duration, remaining), end="\r")
+        remaining = round(duration * numbers / (index) - duration, 2)
+        print("[+] Getting Data :{}/{}，Cost Time: {}s， Remainimg: {}s".format(index, numbers, duration, remaining), end="\r")
         try:
             url = company_url
             data = requests.get(url).text
@@ -79,4 +79,3 @@ if __name__ == '__main__':
                 company.rank,    company.industry,              company.company_name,company.company_name_en,       company.revenue, \
                 company.country, company.employee,              company.revenue,     company.revenue_change_percent, \
                 company.profit,  company.profit_change_percent, company.total_money, company.shareholders_equity,   company.ceo))
-

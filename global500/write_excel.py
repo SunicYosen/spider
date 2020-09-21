@@ -33,7 +33,6 @@ def write_excel(industry_dict, company_list, out_file='result.xlsx'):
 
     print("[+] Info: Write Excel Done!")
 
-
 if __name__ == '__main__':
     root_url       = 'https://www.caifuzhongwen.com/fortune500/paiming/global500/2020_%E4%B8%96%E7%95%8C500%E5%BC%BA.htm'
     industry_dict  = get_industry_cat(root_url)

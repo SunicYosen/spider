@@ -6,8 +6,10 @@ from lxml import etree
 import requests
 import time
 
-def get_url_global500(root_url, numbers, pre_url='https://www.caifuzhongwen.com/fortune500/'):
+def get_url_global500(root_url, numbers=500, pre_url='https://www.caifuzhongwen.com/fortune500/'):
     link_array     = []
+    name_array     = []
+
 
     try:
         data       = requests.get(root_url).text
@@ -21,12 +23,13 @@ def get_url_global500(root_url, numbers, pre_url='https://www.caifuzhongwen.com/
             company_name_en = rank_table.xpath('./tr[{}]/td[2]/a/text()[2]'.format(i+2))[0].encode('iso-8859-1').decode('utf-8')
             full_link       = pre_url+company_link.replace('../','')
             link_array.append(full_link)
+            name_array.append(company_name)
 
     except:
         print("ERROR: Error parse the website content!\n")
     
     print("[+] Info: Got all urls!")
-    return link_array
+    return link_array, name_array
 
 
 if __name__ == '__main__':
