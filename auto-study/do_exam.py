@@ -60,15 +60,22 @@ def choose_question(driver, rough_answer_array, clicked_flag):
     for i in driver.find_elements_by_tag_name("button"):
         if (i.get_attribute("innerText") == "下一题"):
             i.click()
-
+        # For Special exam
+        elif (i.get_attribute("innerText") == "交 卷"):
+            print("[+]: 交卷")
+            i.click()
+    
+    time.sleep(2)
 
 def blank_question(driver, rough_answer_array):
     driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_class_name("question")[0])
     blankArr = driver.find_elements_by_class_name("blank")
     for i in range(len(blankArr)):
         blankArr[i].send_keys(rough_answer_array[i])
+    time.sleep(2)
     driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
     driver.find_elements_by_tag_name("button")[0].click()
+    time.sleep(2)
 
 def other_question(driver):
     tempArr = []
@@ -85,6 +92,7 @@ def other_question(driver):
             item.click()
     driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
     driver.find_elements_by_tag_name("button")[0].click()
+    time.sleep(2)
 
 def video_question(driver):
     if (len(driver.find_elements_by_class_name("choosable")) != 0):
@@ -94,6 +102,7 @@ def video_question(driver):
         driver.find_elements_by_tag_name("button")[0].click()
         time.sleep(1)
         driver.find_elements_by_tag_name("button")[0].click()
+        time.sleep(2)
     else:
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_class_name("blank")[0])
         videoBlankArr = driver.find_elements_by_class_name("blank")
@@ -103,6 +112,7 @@ def video_question(driver):
         driver.find_elements_by_tag_name("button")[0].click()
         time.sleep(1)
         driver.find_elements_by_tag_name("button")[0].click()
+        time.sleep(2)
 
 def get_rough_answer(driver, rough_answer_array):
     fontArr = driver.find_elements_by_tag_name("font")
@@ -125,7 +135,7 @@ def do_exam(driver, groups_num=1, questions_per_group=5):
             print("[+]: Doing Exam: Group ", int(counter/questions_per_group)+1, '/', groups_num)
 
         if(counter%questions_per_group == 0):
-            print("[+]: -- ", 5, '/', questions_per_group)
+            print("[+]: -- ", questions_per_group, '/', questions_per_group)
         else:
             print("[+]: -- ", counter%questions_per_group, '/', questions_per_group)
 
@@ -144,10 +154,12 @@ def do_exam(driver, groups_num=1, questions_per_group=5):
 
             time.sleep(1)
             driver.find_elements_by_class_name("tips")[0].click()
+            time.sleep(1)
             # print(rough_answer_array)
 
         # Scroll
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_class_name("question")[0])
+        time.sleep(1)
 
         # Get the type of questions
         if len(driver.find_elements_by_class_name("false")) != 0:
@@ -155,7 +167,9 @@ def do_exam(driver, groups_num=1, questions_per_group=5):
         if len(driver.find_elements_by_class_name("choosable")) != 0:
             choose_question(driver, rough_answer_array, clicked_flag)
         else:
-            blank_question(driver, rough_answer_array)    
+            blank_question(driver, rough_answer_array)
+
+        time.sleep(1) 
 
 def main():
     study_url   = "https://www.xuexi.cn/"

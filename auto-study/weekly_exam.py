@@ -27,7 +27,7 @@ def get_weekly_last(driver):
             break
 
 def weekly_exam(driver, url='https://pc.xuexi.cn/points/exam-index.html', weeks_num=1, questions_per_week=5):
-    print("[+]: Do Weekly Exam - ", weeks_num, "Week(s)", questions_per_week, "Question(s) per Group.")
+    print("[+]: Do Weekly Exam - ", weeks_num, "Week(s)", questions_per_week, "Question(s) per Week.")
     driver.get(url)
     get_weekly_list_page(driver)
     get_weekly_last(driver)

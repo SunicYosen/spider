@@ -5,6 +5,7 @@
 import time
 import re
 import platform
+import argparse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,6 +18,7 @@ from read_articles import read_articles
 from watch_videos import watch_videos
 from daily_exam import daily_exam
 from weekly_exam import weekly_exam
+from special_exam import special_exam
 from get_scores import get_scores
 
 def autostudy():
@@ -27,12 +29,51 @@ def autostudy():
     exam_url     = 'https://pc.xuexi.cn/points/exam-index.html'
     score_url    = 'https://pc.xuexi.cn/points/my-points.html'
 
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-u', "--usage", action='store_true',
+                        help="Print usage.")
+
+    parser.add_argument('-n', "--headless", action='store_true',
+                        help="Chrome Headless")
+
+    parser.add_argument('-l', "--login",  action='store_true',
+                        help="Just Login.")
+
+    parser.add_argument('-r', "--read",  action='store_true',
+                        help="Read Articles.")
+
+    parser.add_argument('-w', "--watch",  action='store_true',
+                        help="Watch Videos.")
+
+    parser.add_argument('-d', "--dexam",  action='store_true',
+                        help="Daily Exam.")
+
+    parser.add_argument('-x',"--wexam",  action='store_true',
+                        help="Weekly Exam.")
+
+    parser.add_argument('-v', "--sexam",  action='store_true',
+                        help="Special Exam.")
+
+    parser.add_argument('-s', "--score",  action='store_true',
+                        help="Get Score.")
+
+    parser.add_argument('-a', "--all",  action='store_true',
+                        help="Read Articles & Watch Videos & Do Exams & Get Score.")
+    
+    args = parser.parse_args()
+
     chrome_options = webdriver.ChromeOptions()
+
+    # chrome_options.add_argument('--headless')
+    if args.headless:
+        chrome_options.add_argument('--headless')
     user_data_path = get_usr_data_dir()
     chrome_options.add_argument(user_data_path)
-    # chrome_options.add_argument('--headless')
+
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
+
     if platform.system().lower() == 'linux':
         driver = webdriver.Chrome(options=chrome_options)
     else:
@@ -41,19 +82,46 @@ def autostudy():
     # driver.get(home_url)
     # driver.implicitly_wait(5)
 
-    while check_login(driver, login_url):
-        login_study(driver, login_url)
+    # Login
+    if args.login:
+        while check_login(driver, login_url):
+            login_study(driver, login_url)
 
-    # read_articles(driver, article_urls)
-
-    # watch_videos(driver, videos_url)
-
-    # Home Page
-    # daily_exam(driver, exam_url, 1, 5)
-    weekly_exam(driver, exam_url, 1, 5)
-
-    get_scores(driver, score_url)
+    else:
+        while check_login(driver, login_url):
+            login_study(driver, login_url)
+        
+        if args.read:
+            # Read Article
+            read_articles(driver, article_urls)
+        elif args.watch:
+            # Watch Videos
+            watch_videos(driver, videos_url)
+        elif args.dexam:
+            # Do Daily Exam
+            daily_exam(driver, exam_url, 1, 5)
+        elif args.wexam:
+            # Do Weekly Exam
+            weekly_exam(driver, exam_url, 1, 5)
+        elif args.sexam:
+            # Do Special Exam
+            special_exam(driver, exam_url, 1, 10)
+        elif args.score:
+            get_scores(driver, score_url)
+        elif args.all:
+            read_articles(driver, article_urls)
+            watch_videos(driver, videos_url)
+            daily_exam(driver, exam_url, 1, 5)
+            weekly_exam(driver, exam_url, 1, 5)
+            special_exam(driver, exam_url, 1, 10)
+            get_scores(driver, score_url)
+        else:
+            read_articles(driver, article_urls)
+            watch_videos(driver, videos_url)
+            daily_exam(driver, exam_url, 1, 5)
+            weekly_exam(driver, exam_url, 1, 5)
+            special_exam(driver, exam_url, 1, 10)
+            get_scores(driver, score_url)
 
 if __name__ == '__main__':
     autostudy()
-
