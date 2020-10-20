@@ -1,5 +1,5 @@
 '''
-    Auto Study
+    Auto Study Command Method.
 '''
 
 import time
@@ -31,11 +31,8 @@ def autostudy():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-u', "--usage", action='store_true',
-                        help="Print usage.")
-
-    parser.add_argument('-n', "--headless", action='store_true',
-                        help="Chrome Headless")
+    parser.add_argument('-c', "--chrome", action='store_true',
+                        help="Show Chrome Window.")
 
     parser.add_argument('-l', "--login",  action='store_true',
                         help="Just Login.")
@@ -66,7 +63,9 @@ def autostudy():
     chrome_options = webdriver.ChromeOptions()
 
     # chrome_options.add_argument('--headless')
-    if args.headless:
+    if args.chrome:
+        pass
+    else:
         chrome_options.add_argument('--headless')
     user_data_path = get_usr_data_dir()
     chrome_options.add_argument(user_data_path)
@@ -94,28 +93,22 @@ def autostudy():
         if args.read:
             # Read Article
             read_articles(driver, article_urls)
-        elif args.watch:
+        if args.watch:
             # Watch Videos
             watch_videos(driver, videos_url)
-        elif args.dexam:
+        if args.dexam:
             # Do Daily Exam
             daily_exam(driver, exam_url, 1, 5)
-        elif args.wexam:
+        if args.wexam:
             # Do Weekly Exam
             weekly_exam(driver, exam_url, 1, 5)
-        elif args.sexam:
+        if args.sexam:
             # Do Special Exam
             special_exam(driver, exam_url, 1, 10)
-        elif args.score:
+        if args.score:
             get_scores(driver, score_url)
-        elif args.all:
-            read_articles(driver, article_urls)
-            watch_videos(driver, videos_url)
-            daily_exam(driver, exam_url, 1, 5)
-            weekly_exam(driver, exam_url, 1, 5)
-            special_exam(driver, exam_url, 1, 10)
-            get_scores(driver, score_url)
-        else:
+
+        if args.all:
             read_articles(driver, article_urls)
             watch_videos(driver, videos_url)
             daily_exam(driver, exam_url, 1, 5)
