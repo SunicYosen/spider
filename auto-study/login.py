@@ -60,11 +60,12 @@ def check_login(driver, url="https://pc.xuexi.cn/points/login.html"):
     driver.execute_script("var q=document.documentElement.scrollLeft=225")
     time.sleep(2)
     try:
-        WebDriverWait(driver,5).until(EC.title_is(u"我的学习"))
+        WebDriverWait(driver, 10).until(EC.title_is(u"我的学习"))
         print("[+]: 登录成功!")
         return 0
 
     except:
+        print("[-]: 未登录，正在重试...")
         return 1
 
 def main():
