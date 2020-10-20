@@ -15,7 +15,7 @@ def read_articles(driver, urls=[]):
     for num, url in enumerate(urls):
         print("[+]: Reading: ", num+1, '/',len(urls))
         driver.get(url)
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(3)
         articles = driver.find_elements_by_xpath("//div[@class='text-link-item-title']")
 
         for index, article in enumerate(articles):

@@ -13,6 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from get_usr_data_dir import get_usr_data_dir
 
+from args_parser import args_sparse
 from login import login_study,check_login
 from read_articles import read_articles
 from watch_videos import watch_videos
@@ -29,36 +30,7 @@ def autostudy():
     exam_url     = 'https://pc.xuexi.cn/points/exam-index.html'
     score_url    = 'https://pc.xuexi.cn/points/my-points.html'
 
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('-c', "--chrome", action='store_true',
-                        help="Show Chrome Window.")
-
-    parser.add_argument('-l', "--login",  action='store_true',
-                        help="Just Login.")
-
-    parser.add_argument('-r', "--read",  action='store_true',
-                        help="Read Articles.")
-
-    parser.add_argument('-w', "--watch",  action='store_true',
-                        help="Watch Videos.")
-
-    parser.add_argument('-d', "--dexam",  action='store_true',
-                        help="Daily Exam.")
-
-    parser.add_argument('-x',"--wexam",  action='store_true',
-                        help="Weekly Exam.")
-
-    parser.add_argument('-v', "--sexam",  action='store_true',
-                        help="Special Exam.")
-
-    parser.add_argument('-s', "--score",  action='store_true',
-                        help="Get Score.")
-
-    parser.add_argument('-a', "--all",  action='store_true',
-                        help="Read Articles & Watch Videos & Do Exams & Get Score.")
-    
-    args = parser.parse_args()
+    args = args_sparse()
 
     chrome_options = webdriver.ChromeOptions()
 
