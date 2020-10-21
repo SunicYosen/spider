@@ -30,19 +30,37 @@ def get_qrcode_src(driver):
     qrcode_src    = login_qrcode[0].get_attribute('src')
     return qrcode_src
 
-def login_study(driver, url="https://pc.xuexi.cn/points/login.html"):
+def get_qrcode_screen_pic(driver, url="https://pc.xuexi.cn/points/login.html", qrcode_path="qrcode.png", scroll_top=950, scroll_left=225):
     driver.get(url)
-    driver.execute_script("var q=document.documentElement.scrollTop=950")
-    driver.execute_script("var q=document.documentElement.scrollLeft=225")
+    driver.execute_script("var q=document.documentElement.scrollTop={}".format(scroll_top))
+    driver.execute_script("var q=document.documentElement.scrollLeft={}".format(scroll_left))
     time.sleep(1)
 
-    qrcode_src = get_qrcode_src(driver)
-    time.sleep(1)
-    qrcode_pic = get_qrcode_pic(driver, qrcode_src)
-    time.sleep(1)
-    qrcode_pic.show()
+    login_qrcode  = driver.find_elements_by_id('qglogin')[0]
+    driver.save_screenshot(qrcode_path)
+    code_location = login_qrcode.location
+    code_size     = login_qrcode.size
+    code_left     = code_location['x'] - scroll_left
+    code_top      = code_location['y'] - scroll_top
+    code_right    = code_location['x'] + code_size['width'] - scroll_left + 50
+    code_bottom   = code_location['y'] + code_size['height'] - scroll_top
 
-    driver.get(url)
+    qrcode_img    = Image.open(qrcode_path)
+    qrcode_img    = qrcode_img.crop((code_left, code_top, code_right, code_bottom))
+    # qrcode_img    = qrcode_img.crop((250, 120, 550, 400))
+    # print(code_left, code_top, code_right, code_bottom)
+    # qrcode_img.resize((48,48), Image.LANCZOS)
+    qrcode_img.save(qrcode_path)
+
+    return qrcode_path
+
+def login_study(driver):
+    # get_qrcode_screen_pic(driver, scroll_top=950, scroll_left=225)
+    # qrcode_src = get_qrcode_src(driver)
+    # time.sleep(1)
+    # qrcode_pic = get_qrcode_pic(driver, qrcode_src)
+    # time.sleep(1)
+    # qrcode_pic.show()
 
     try:
         WebDriverWait(driver,60).until(EC.title_is(u"我的学习"))
@@ -56,11 +74,11 @@ def login_study(driver, url="https://pc.xuexi.cn/points/login.html"):
 
 def check_login(driver, url="https://pc.xuexi.cn/points/login.html"):
     driver.get(url)
-    driver.execute_script("var q=document.documentElement.scrollTop=950")
-    driver.execute_script("var q=document.documentElement.scrollLeft=225")
+    driver.execute_script("var q=document.documentElement.scrollTop={}".format(950))
+    driver.execute_script("var q=document.documentElement.scrollLeft={}".format(225))
     time.sleep(2)
     try:
-        WebDriverWait(driver, 10).until(EC.title_is(u"我的学习"))
+        WebDriverWait(driver, 5).until(EC.title_is(u"我的学习"))
         print("[+]: 登录成功!")
         return 0
 
@@ -72,11 +90,11 @@ def main():
     option = webdriver.ChromeOptions()
     option.add_argument('disable-infobars')
     chrome_options = Options()
-    chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     user_data_path = get_usr_data_dir()
-    # chrome_options.add_argument(user_data_path)
+    chrome_options.add_argument(user_data_path)
 
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://www.xuexi.cn/")
@@ -85,7 +103,8 @@ def main():
     login_url = "https://pc.xuexi.cn/points/login.html"
 
     while check_login(driver, login_url):
-        login_study(driver, url=login_url)
+        get_qrcode_screen_pic(driver, login_url)
+        login_study(driver)
     
     driver.quit()
 

@@ -6,7 +6,7 @@ from selenium import webdriver
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from get_usr_data_dir import get_usr_data_dir
-from login import login_study,check_login
+from login import login_study, check_login, get_qrcode_screen_pic
 from read_articles import read_articles
 from watch_videos import watch_videos
 from daily_exam import daily_exam
@@ -23,6 +23,8 @@ class WorkThread(QThread):
     score_url    = 'https://pc.xuexi.cn/points/my-points.html'
     signal       = pyqtSignal(str)
     login_signal = pyqtSignal(bool)
+    login_qrcode = pyqtSignal(str)
+    signal_score = pyqtSignal(list)
     is_driverd   = False
 
     def __init__(self, args):
@@ -66,7 +68,9 @@ class WorkThread(QThread):
     
     def login(self):
         while check_login(self.driver, self.login_url):
-            login_study(self.driver, self.login_url)
+            self.qrcode_path = get_qrcode_screen_pic(self.driver, self.login_url)
+            self.login_qrcode.emit(self.qrcode_path)
+            login_study(self.driver)
         self.is_login = True
         self.login_signal.emit(True)
 
@@ -102,7 +106,8 @@ class WorkThread(QThread):
 
     def get_scores(self):
         if self.is_login:
-            get_scores(self.driver, self.score_url)
+            total_score, today_score = get_scores(self.driver, self.score_url)
+            self.signal_score.emit([total_score, today_score])
         else:
             self.signal.emit("[-]: Error Read Articles. Please Login First!")
 

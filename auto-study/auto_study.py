@@ -14,7 +14,7 @@ from selenium.webdriver.chrome.options import Options
 from get_usr_data_dir import get_usr_data_dir
 
 from args_parser import args_sparse
-from login import login_study,check_login
+from login import login_study, check_login, get_qrcode_screen_pic
 from read_articles import read_articles
 from watch_videos import watch_videos
 from daily_exam import daily_exam
@@ -56,11 +56,13 @@ def autostudy():
     # Login
     if args.login:
         while check_login(driver, login_url):
-            login_study(driver, login_url)
+            get_qrcode_screen_pic(driver, login_url)
+            login_study(driver)
 
     else:
         while check_login(driver, login_url):
-            login_study(driver, login_url)
+            get_qrcode_screen_pic(driver, login_url)
+            login_study(driver)
         
         if args.read:
             # Read Article

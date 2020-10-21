@@ -1,9 +1,11 @@
-
+import os
 import sys
 
+from PIL import Image
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QApplication, qApp
-from PyQt5.QtCore import QEventLoop
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QWidget, QApplication, qApp, QGraphicsPixmapItem, QGraphicsScene
+from PyQt5.QtCore import QEventLoop, QCoreApplication
 
 from args_parser import args_sparse
 from work_thread import WorkThread
@@ -18,6 +20,8 @@ class AutoStudyGui(QWidget):
         self.work_thread = WorkThread(self.args)
         self.work_thread.signal.connect(self.write)
         self.work_thread.login_signal.connect(self.set_login)
+        self.work_thread.login_qrcode.connect(self.set_qrcode)
+        self.work_thread.signal_score.connect(self.set_score)
         self.set_login(False)
         self.login_bt_action()
         self.read_articles_bt_action()
@@ -26,6 +30,7 @@ class AutoStudyGui(QWidget):
         self.weekly_exam_bt_action()
         self.special_exam_bt_action()
         self.get_scores_bt_action()
+        self.quit_bt_action()
         # self.init_driver()
 
     def load_ui(self, ui_path=''):
@@ -41,6 +46,18 @@ class AutoStudyGui(QWidget):
             self.user_broswer.setText("已登录")
         else:
             self.user_broswer.setText("未登录")
+
+    def set_qrcode(self, qrcode_path):
+        if os.path.exists(qrcode_path):
+            pix   = QPixmap()
+            pix.load(qrcode_path)
+            item  = QGraphicsPixmapItem(pix)
+            scene = QGraphicsScene()
+            scene.addItem(item)
+            self.qrcode_viewer.setScene(scene)
+
+    def set_score(self, score_list):
+        self.score_broswer.setText(str(score_list[1])+"/"+str(score_list[0]))
 
     def login_bt_action(self):
         self.login_bt.clicked[bool].connect(self.login_start)
@@ -97,6 +114,9 @@ class AutoStudyGui(QWidget):
     def do_all_start(self):
         self.work_thread.args = ["l","r","w","d","x","v","s"]
         self.work_thread.start()
+
+    def quit_bt_action(self):
+        self.quit_bt.clicked[bool].connect(QCoreApplication.quit)
 
 def main():
     args   = args_sparse()
