@@ -124,7 +124,11 @@ class AutoStudyGui(QWidget):
         self.work_thread.start()
 
     def quit_bt_action(self):
-        self.quit_bt.clicked[bool].connect(QCoreApplication.quit)
+        self.quit_bt.clicked[bool].connect(self.quit_bt_start)
+
+    def quit_bt_start(self):
+        self.work_thread.driver.quit()
+        QCoreApplication.quit()
 
 def main():
     args   = args_sparse()
