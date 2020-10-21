@@ -17,6 +17,7 @@ class AutoStudyGui(QWidget):
         self.args     = args
         self.is_login = False
         self.load_ui('auto_study.ui')
+        self.xuexi_pic_path = "xuexi.jpg"
         self.work_thread = WorkThread(self.args)
         self.work_thread.signal.connect(self.write)
         self.work_thread.login_signal.connect(self.set_login)
@@ -44,6 +45,13 @@ class AutoStudyGui(QWidget):
     def set_login(self, flag):
         if flag:
             self.user_broswer.setText("已登录")
+            self.label.setText("已登录，欢迎学习！")
+            pix   = QPixmap()
+            pix.load(self.xuexi_pic_path)
+            item  = QGraphicsPixmapItem(pix)
+            scene = QGraphicsScene()
+            scene.addItem(item)
+            self.qrcode_viewer.setScene(scene)
         else:
             self.user_broswer.setText("未登录")
 

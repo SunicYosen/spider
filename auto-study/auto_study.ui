@@ -46,7 +46,7 @@
    <property name="childrenCollapsible">
     <bool>true</bool>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetFixedSize</enum>
@@ -257,6 +257,9 @@
          <height>300</height>
         </size>
        </property>
+       <property name="cursor" stdset="0">
+        <cursorShape>ForbiddenCursor</cursorShape>
+       </property>
       </widget>
      </item>
     </layout>
@@ -265,7 +268,7 @@
     <property name="orientation">
      <enum>Qt::Vertical</enum>
     </property>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QLabel" name="run_log_label">
@@ -343,7 +346,14 @@
       </item>
      </layout>
     </widget>
-    <widget class="QTextBrowser" name="log_browser"/>
+    <widget class="QTextBrowser" name="log_browser">
+     <property name="cursor" stdset="0">
+      <cursorShape>ForbiddenCursor</cursorShape>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>
