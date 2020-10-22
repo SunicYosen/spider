@@ -1,47 +1,78 @@
 '''
  Read Article
 '''
+import os
 import time
+import csv
 import re
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-from get_usr_data_dir import get_usr_data_dir
+import random
+import datetime
+from init_chromedriver import init_chromedriver
+
+def get_article_urls(csv_filename):
+
+    article_urls = {}
+
+    if not os.path.exists(csv_filename):
+        print("[-]: Read Articles Failed! CSV file doesn't exist!")
+        return article_urls
+
+    csv_file     = open(csv_filename, "r")
+    csv_lines    = csv.reader(csv_file)
+
+    for article_url in csv_lines:
+        article_urls[article_url[0]] = article_url[1]
+
+    csv_file.close()
+
+    return article_urls
+
 
 # 阅读文章
-def read_articles(driver, urls=[]):
-    for num, url in enumerate(urls):
-        print("[+]: Reading: ", num+1, '/',len(urls))
-        driver.get(url)
-        driver.implicitly_wait(3)
-        articles = driver.find_elements_by_xpath("//div[@class='text-link-item-title']")
+def read_articles(driver, csv_filename="articles.csv", read_mode=1):
+    article_urls = get_article_urls(csv_filename)
 
+    if not article_urls:
+        print("[-]: Read Articles Failed! CSV file is blank.")
+        return
+
+    for num, articles_list_name in enumerate(article_urls):
+        articles_list_url  = article_urls[articles_list_name]
+        print("[+]: Reading: ", num + 1, '/',len(article_urls), articles_list_name)
+
+        if read_mode == 0:
+            random.seed(datetime.datetime.now())
+            read_num = random.randint(0, 2)
+        else:
+            read_num = read_mode
+
+        driver.get(articles_list_url)
+        driver.implicitly_wait(3 + random.randint(0, 2))
+
+        articles = driver.find_elements_by_xpath("//div[@class='text-link-item-title']")
         for index, article in enumerate(articles):
-            if index > 4:
+            if index > read_num-1:
                 break
 
             article.click()
             all_handles = driver.window_handles
             driver.switch_to.window(all_handles[-1])
             driver.get(driver.current_url)
-            print("[+]: --", index+1, '/', 5, '\t', driver.current_url)
-            # driver.save_screenshot('article'+str(num)+'_'+str(index)+'.png')
+            print("[+]: --", index + 1, '/', read_num, '\t', driver.current_url)
             
             # Scroll down
             for i in range(0, 2000, 100):
                 js_code = "var q=document.documentElement.scrollTop=" + str(i)
                 driver.execute_script(js_code)
-                time.sleep(2)
+                time.sleep(1.5 + random.random())
 
             # Scroll up
-            for i in range(2000, 0, -100):
+            for i in range(2000, 0, -200):
                 js_code = "var q=document.documentElement.scrollTop=" + str(i)
                 driver.execute_script(js_code)
-                time.sleep(2)
+                time.sleep(1 + random.random())
 
-            time.sleep(2)
+            time.sleep(1 + random.random())
             driver.close()
 
             # Return Home page
@@ -50,27 +81,8 @@ def read_articles(driver, urls=[]):
     print("[+]: 阅读文章完毕\n")
 
 def main():
-    option = webdriver.ChromeOptions()
-    option.add_argument('disable-infobars')
-    chrome_options = Options()
-    # chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    user_data_path = get_usr_data_dir()
-    chrome_options.add_argument(user_data_path)
-
-    driver = webdriver.Chrome(options=chrome_options)
-
-    driver.get("https://www.xuexi.cn/")
-    driver.implicitly_wait(5)
-    article_urls = ["https://www.xuexi.cn/xxqg.html?id=36a1bf1b683942fe917fc1866f13fc21","https://www.xuexi.cn/xxqg.html?id=2813415f8e1c48b4b47e794aca7b7bb5"]
-    videos_url   = 'https://www.xuexi.cn/4426aa87b0b64ac671c96379a3a8bd26/db086044562a57b441c24f2af1c8e101.html'
-    score_url    = 'https://pc.xuexi.cn/points/my-points.html'
-    read_articles(driver, article_urls)     # 阅读文章
-
-    # watch_videos(videos_url)      # 观看视频
-    # get_scores(score_url)         # 获得今日积分
-
+    driver = init_chromedriver(show_flag=True)
+    read_articles(driver, csv_filename="articles.csv", read_mode=1)  # 阅读文章
     driver.quit()
 
 if __name__ == '__main__':
