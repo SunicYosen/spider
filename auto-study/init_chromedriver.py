@@ -2,6 +2,7 @@
 
 '''
 import time
+import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -18,7 +19,13 @@ def init_chromedriver(show_flag=False):
     user_data_path = get_usr_data_dir()
     chrome_options.add_argument(user_data_path)
 
-    driver = webdriver.Chrome(options=chrome_options)
+    if platform.system().lower() == 'linux':
+        driver = webdriver.Chrome(options=chrome_options)
+    elif platform.system().lower() == 'windows':
+        driver = webdriver.Chrome('./tools/win32/chromedriver.exe', options=chrome_options)
+    else:
+        print('[-] ', str(platform.system()), 'not supported!')
+        exit()
 
     return driver
 
