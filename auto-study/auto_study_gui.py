@@ -11,19 +11,18 @@ from args_parser import args_sparse
 from work_thread import WorkThread
 
 class AutoStudyGui(QWidget):
-
     def __init__(self, args):
         super(AutoStudyGui, self).__init__()
+        self.setWindowTitle("Auto Study")
         self.args     = args
         self.is_login = False
-        self.load_ui('auto_study.ui')
+        self.load_ui()
         self.xuexi_pic_path = "xuexi.jpg"
         self.work_thread = WorkThread(self.args)
         self.work_thread.signal.connect(self.write)
         self.work_thread.login_signal.connect(self.set_login)
         self.work_thread.login_qrcode.connect(self.set_qrcode)
         self.work_thread.signal_score.connect(self.set_score)
-        self.set_login(False)
         self.login_bt_action()
         self.read_articles_bt_action()
         self.watch_videos_bt_action()
@@ -31,10 +30,14 @@ class AutoStudyGui(QWidget):
         self.weekly_exam_bt_action()
         self.special_exam_bt_action()
         self.get_scores_bt_action()
+        self.do_all_bt_action()
         self.quit_bt_action()
+        self.set_login(False)
+        self.show()
         # self.init_driver()
 
-    def load_ui(self, ui_path=''):
+    def load_ui(self):
+        ui_path = os.path.join(os.path.dirname(__file__), "auto_study.ui")        
         uic.loadUi(ui_path,self)
 
     def write(self, info):
@@ -128,14 +131,14 @@ class AutoStudyGui(QWidget):
 
     def quit_bt_start(self):
         self.work_thread.driver.quit()
+        self.work_thread.wait()
+        self.work_thread.quit()
         QCoreApplication.quit()
 
 def main():
     args   = args_sparse()
     app    = QApplication(sys.argv)
     window = AutoStudyGui(args)
-    window.setWindowTitle("Auto Study")
-    window.show()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':

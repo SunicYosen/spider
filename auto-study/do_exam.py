@@ -3,7 +3,9 @@
 '''
 
 import time
+import random
 import difflib
+import datetime
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
@@ -32,7 +34,7 @@ def next_practice(driver):
     try:
         if (driver.find_elements_by_tag_name("button")[0].get_attribute("innerText") == "再来一组"):
             driver.find_elements_by_tag_name("button")[0].click()
-            time.sleep(1)
+            time.sleep(1 + random.random()*2)
     except:
         print("[-]: Next Practice Failed!")
         exit()
@@ -45,17 +47,17 @@ def choose_question(driver, rough_answer_array, clicked_flag):
             if difflib.SequenceMatcher(None, choosable_array[i].get_attribute("innerText")[3:], j).ratio() >= 0.8:
                 choosable_array[i].click()
                 clicked_flag = True
-                time.sleep(1)
+                time.sleep(1 + random.random()*2)
 
     # The First Default
     if (clicked_flag == False):
         choosable_array[0].click()
 
-    time.sleep(1)
+    time.sleep(1 + random.random()*2)
     driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
     driver.find_elements_by_tag_name("button")[0].click()
 
-    time.sleep(1)
+    time.sleep(1 + random.random()*2)
 
     for i in driver.find_elements_by_tag_name("button"):
         if (i.get_attribute("innerText") == "下一题"):
@@ -65,17 +67,17 @@ def choose_question(driver, rough_answer_array, clicked_flag):
             print("[+]: 交卷")
             i.click()
     
-    time.sleep(2)
+    time.sleep(1 + random.random()*2)
 
 def blank_question(driver, rough_answer_array):
     driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_class_name("question")[0])
     blankArr = driver.find_elements_by_class_name("blank")
     for i in range(len(blankArr)):
         blankArr[i].send_keys(rough_answer_array[i])
-    time.sleep(2)
+    time.sleep(1 + random.random()*2)
     driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
     driver.find_elements_by_tag_name("button")[0].click()
-    time.sleep(2)
+    time.sleep(1 + random.random()*2)
 
 def other_question(driver):
     tempArr = []
@@ -92,7 +94,7 @@ def other_question(driver):
             item.click()
     driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
     driver.find_elements_by_tag_name("button")[0].click()
-    time.sleep(2)
+    time.sleep(1 + random.random()*2)
 
 def video_question(driver):
     if (len(driver.find_elements_by_class_name("choosable")) != 0):
@@ -100,9 +102,9 @@ def video_question(driver):
         driver.find_elements_by_class_name("choosable")[0].click()
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
         driver.find_elements_by_tag_name("button")[0].click()
-        time.sleep(1)
+        time.sleep(1 + random.random()*2)
         driver.find_elements_by_tag_name("button")[0].click()
-        time.sleep(2)
+        time.sleep(1 + random.random()*2)
     else:
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_class_name("blank")[0])
         videoBlankArr = driver.find_elements_by_class_name("blank")
@@ -110,9 +112,9 @@ def video_question(driver):
             blank.send_keys("a")
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
         driver.find_elements_by_tag_name("button")[0].click()
-        time.sleep(1)
+        time.sleep(1 + random.random()*2)
         driver.find_elements_by_tag_name("button")[0].click()
-        time.sleep(2)
+        time.sleep(1 + random.random()*2)
 
 def get_rough_answer(driver, rough_answer_array):
     fontArr = driver.find_elements_by_tag_name("font")
@@ -125,10 +127,11 @@ def do_exam(driver, groups_num=1, questions_per_group=5):
     counter            = 0
     clicked_flag       = False
     rough_answer_array = []
+    random.seed(datetime.datetime.now())
 
     while(counter < groups_num * questions_per_group):
         counter += 1
-        time.sleep(2)
+        time.sleep(1 + random.random()*2)
         rough_answer_array.clear()
 
         if(counter%questions_per_group == 1):
@@ -152,14 +155,14 @@ def do_exam(driver, groups_num=1, questions_per_group=5):
 
             get_rough_answer(driver, rough_answer_array)
 
-            time.sleep(1)
+            time.sleep(1 + random.random()*2)
             driver.find_elements_by_class_name("tips")[0].click()
-            time.sleep(1)
+            time.sleep(1 + random.random()*2)
             # print(rough_answer_array)
 
         # Scroll
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_class_name("question")[0])
-        time.sleep(1)
+        time.sleep(1 + random.random()*2)
 
         # Get the type of questions
         if len(driver.find_elements_by_class_name("false")) != 0:
@@ -169,7 +172,7 @@ def do_exam(driver, groups_num=1, questions_per_group=5):
         else:
             blank_question(driver, rough_answer_array)
 
-        time.sleep(1) 
+        time.sleep(1 + random.random()*2) 
 
 def main():
     study_url   = "https://www.xuexi.cn/"
