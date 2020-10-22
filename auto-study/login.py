@@ -23,11 +23,10 @@ def get_qrcode_pic(driver, qrcode_src):
     # plt.figure("学习强国扫码登录")
     # plt.imshow(img)
     # plt.show()
-    #
 
 def get_qrcode_src(driver):
     login_qrcode = driver.find_elements_by_id('ddlogin-iframe')
-    qrcode_src    = login_qrcode[0].get_attribute('src')
+    qrcode_src   = login_qrcode[0].get_attribute('src')
     return qrcode_src
 
 def get_qrcode_screen_pic(driver, url="https://pc.xuexi.cn/points/login.html", qrcode_path="qrcode.png", scroll_top=950, scroll_left=225):
@@ -47,9 +46,6 @@ def get_qrcode_screen_pic(driver, url="https://pc.xuexi.cn/points/login.html", q
 
     qrcode_img    = Image.open(qrcode_path)
     qrcode_img    = qrcode_img.crop((code_left, code_top, code_right, code_bottom))
-    # qrcode_img    = qrcode_img.crop((250, 120, 550, 400))
-    # print(code_left, code_top, code_right, code_bottom)
-    # qrcode_img.resize((48,48), Image.LANCZOS)
     qrcode_img.save(qrcode_path)
 
     return qrcode_path
