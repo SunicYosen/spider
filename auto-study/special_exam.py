@@ -1,9 +1,6 @@
 
 import time
 import difflib
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.keys import Keys
 
 from do_exam import do_exam
 
@@ -21,7 +18,7 @@ def get_special_last(driver):
     special_list = driver.find_elements_by_tag_name("button")
 
     for special in special_list:
-        if (special.get_attribute("innerText") == "开始答题") or (special.get_attribute("innerText") == "继续答题"):
+        if (special.get_attribute("innerText") == "开始答题") or (special.get_attribute("innerText") == "继续答题") or (special.get_attribute("innerText") == "重新答题"):
             special.click()
             time.sleep(1)
             break

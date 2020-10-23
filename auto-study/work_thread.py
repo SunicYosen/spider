@@ -70,32 +70,32 @@ class WorkThread(QThread):
         if self.is_login:
             watch_videos(self.driver)
         else:
-            self.signal.emit("[-]: Error Read Articles. Please Login First!")
+            self.signal.emit("[-]: Error Watch Videos. Please Login First!")
 
     def daily_exam(self):
         if self.is_login:
             daily_exam(self.driver, self.exam_url)
         else:
-            self.signal.emit("[-]: Error Read Articles. Please Login First!")
+            self.signal.emit("[-]: Error Daily Exam. Please Login First!")
 
     def weekly_exam(self):
         if self.is_login:
             weekly_exam(self.driver, self.exam_url)
         else:
-            self.signal.emit("[-]: Error Read Articles. Please Login First!")
+            self.signal.emit("[-]: Error Weekly Exam. Please Login First!")
 
     def special_exam(self):
         if self.is_login:
             special_exam(self.driver, self.exam_url)
         else:
-            self.signal.emit("[-]: Error Read Articles. Please Login First!")
+            self.signal.emit("[-]: Error Special Exam. Please Login First!")
 
     def get_scores(self):
         if self.is_login:
             total_score, today_score = get_scores(self.driver, self.score_url)
             self.signal_score.emit([total_score, today_score])
         else:
-            self.signal.emit("[-]: Error Read Articles. Please Login First!")
+            self.signal.emit("[-]: Error Get Scores. Please Login First!")
 
     def run(self):
         if "l" in self.args:

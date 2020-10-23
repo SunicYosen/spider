@@ -19,5 +19,5 @@ def get_scores(driver, url):
     today_score = driver.find_element_by_xpath("//span[@class='my-points-points']").get_attribute('innerText')
     print("当前总积分：" + str(gross_score))
     print("今日积分：" + str(today_score))
-    return gross_score,today_score
+    return gross_score, today_score
 

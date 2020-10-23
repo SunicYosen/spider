@@ -7,7 +7,6 @@ import re
 import platform
 import argparse
 
-
 from args_parser import args_sparse
 from init_chromedriver import init_chromedriver
 from login import login_study, check_login, get_qrcode_screen_pic

@@ -7,10 +7,8 @@ import random
 import difflib
 import datetime
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.keys import Keys
 
-from get_usr_data_dir import get_usr_data_dir
+from init_chromedriver import init_chromedriver
 
 def get_my_study_page(driver):
     try:
@@ -80,7 +78,6 @@ def blank_question(driver, rough_answer_array):
     time.sleep(1 + random.random()*2)
 
 def other_question(driver):
-    tempArr = []
     falseArr = []
 
     for ans in driver.find_elements_by_class_name("false"):
@@ -176,11 +173,8 @@ def do_exam(driver, groups_num=1, questions_per_group=5):
 
 def main():
     study_url   = "https://www.xuexi.cn/"
-    chrome_options = webdriver.ChromeOptions()
-    user_data_path = get_usr_data_dir()
-    chrome_options.add_argument(user_data_path)
-    driver = webdriver.Chrome(options=chrome_options)
 
+    driver = init_chromedriver(show_flag=True)
     driver.get(study_url)
     driver.implicitly_wait(5)
 
@@ -191,7 +185,13 @@ def main():
     get_exam_page(driver)
 
     # Practice
-    get_daily_practice_page(driver)
+    try:
+        driver.find_elements_by_class_name("block")[0].click()
+        driver.switch_to.window(driver.window_handles[-1])
+        time.sleep(1)
+    except:
+        print("[-]: Get Exam Practice Page Failed!")
+        exit()
     
     # Do exam
     do_exam(driver)
