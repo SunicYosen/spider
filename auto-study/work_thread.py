@@ -5,7 +5,7 @@ from selenium import webdriver
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from get_usr_data_dir import get_usr_data_dir
+from init_chromedriver import init_chromedriver
 from login import login_study, check_login, get_qrcode_screen_pic
 from read_articles import read_articles
 from watch_videos import watch_videos
@@ -17,8 +17,6 @@ from get_scores import get_scores
 class WorkThread(QThread):
     home_url     = "https://www.xuexi.cn/"
     login_url    = "https://pc.xuexi.cn/points/login.html"
-    article_urls = ["https://www.xuexi.cn/xxqg.html?id=36a1bf1b683942fe917fc1866f13fc21","https://www.xuexi.cn/xxqg.html?id=2813415f8e1c48b4b47e794aca7b7bb5"]
-    videos_url   = 'https://www.xuexi.cn/4426aa87b0b64ac671c96379a3a8bd26/db086044562a57b441c24f2af1c8e101.html'
     exam_url     = 'https://pc.xuexi.cn/points/exam-index.html'
     score_url    = 'https://pc.xuexi.cn/points/my-points.html'
     signal       = pyqtSignal(str)
@@ -46,24 +44,12 @@ class WorkThread(QThread):
         self.signal.emit(info)
 
     def init_dirver(self):
-        chrome_options = webdriver.ChromeOptions()
-
-        # chrome_options.add_argument('--headless')
         if "c" in self.args:
-            pass
+            show_flag = True
         else:
-            chrome_options.add_argument('--headless')
-        user_data_path = get_usr_data_dir()
-        chrome_options.add_argument(user_data_path)
-
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-
-        if platform.system().lower() == 'linux':
-            self.driver = webdriver.Chrome(options=chrome_options)
-        else:
-            self.driver = webdriver.Chrome('./tools/win32/chromedriver.exe', options=chrome_options)
-
+            show_flag = False
+        
+        self.driver = init_chromedriver(show_flag)
         self.is_driverd = True
     
     def login(self):
@@ -76,13 +62,13 @@ class WorkThread(QThread):
 
     def read_articles(self):
         if self.is_login:
-            read_articles(self.driver, self.article_urls)
+            read_articles(self.driver, read_mode=1)
         else:
             self.signal.emit("[-]: Error Read Articles. Please Login First!")
 
     def watch_videos(self):
         if self.is_login:
-            watch_videos(self.driver, self.videos_url)
+            watch_videos(self.driver)
         else:
             self.signal.emit("[-]: Error Read Articles. Please Login First!")
 
