@@ -27,7 +27,6 @@ def get_article_urls(csv_filename):
 
     return article_urls
 
-
 # 阅读文章
 def read_articles(driver, csv_filename="articles.csv", read_mode=1):
     article_urls = get_article_urls(csv_filename)
