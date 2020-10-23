@@ -17,7 +17,7 @@ def get_videos_list(json_filename):
         print("[-]: Watch Videos Failed! JSON file doesn't exist!")
         return videos_lists
 
-    json_file     = open(json_filename, "r")
+    json_file     = open(json_filename, "r", encoding='utf-8')
     json_elems    = json.load(json_file)
 
     videos_address = json_elems["ADDRESS"]

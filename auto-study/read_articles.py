@@ -17,7 +17,7 @@ def get_article_urls(csv_filename):
         print("[-]: Read Articles Failed! CSV file doesn't exist!")
         return article_urls
 
-    csv_file     = open(csv_filename, "r")
+    csv_file     = open(csv_filename, "r", encoding='utf-8')
     csv_lines    = csv.reader(csv_file)
 
     for article_url in csv_lines:
