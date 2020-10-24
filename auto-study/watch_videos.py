@@ -29,7 +29,7 @@ def get_videos_list(json_filename):
 
 def watch_videos(driver, json_filename="videos.json", watch_nums=6):
     videos_address, videos_lists = get_videos_list(json_filename)
-    random.seed(datetime.datetime.now)
+    random.seed(datetime.datetime.now())
 
     url_random  = random.randint(1, len(videos_address))
     for index, address_key in enumerate(videos_address):
@@ -38,6 +38,7 @@ def watch_videos(driver, json_filename="videos.json", watch_nums=6):
     
     video_url = videos_address[video_address_key]
 
+    random.seed(datetime.datetime.now())
     titles_random = random.randint(1, len(videos_lists[video_address_key]))
     for index, title_key in enumerate(videos_lists[video_address_key]):
         if index + 1 == titles_random:
