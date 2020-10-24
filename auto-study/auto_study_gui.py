@@ -132,7 +132,7 @@ class AutoStudyGui(QWidget):
     def quit_bt_start(self):
         self.work_thread.driver.quit()
         sys.stdout = sys.__stdout__
-        self.work_thread.wait()
+        # self.work_thread.wait()
         self.work_thread.quit()
         QCoreApplication.quit()
     
