@@ -18,7 +18,6 @@ from special_exam import special_exam
 from get_scores import get_scores
 
 def autostudy():
-    home_url     = "https://www.xuexi.cn/"
     login_url    = "https://pc.xuexi.cn/points/login.html"
     exam_url     = 'https://pc.xuexi.cn/points/exam-index.html'
     score_url    = 'https://pc.xuexi.cn/points/my-points.html'
@@ -52,22 +51,22 @@ def autostudy():
             watch_videos(driver)
         if args.dexam:
             # Do Daily Exam
-            daily_exam(driver, exam_url, 1, 5)
+            daily_exam(driver, url=exam_url, questions_per_group=5)
         if args.wexam:
             # Do Weekly Exam
-            weekly_exam(driver, exam_url, 1, 5)
+            weekly_exam(driver, url=exam_url, questions_per_week=5)
         if args.sexam:
             # Do Special Exam
-            special_exam(driver, exam_url, 1, 10)
+            special_exam(driver, url=exam_url, questions_per_special=10)
         if args.score:
             get_scores(driver, score_url)
 
         if args.all:
-            read_articles(driver, article_urls)
-            watch_videos(driver, videos_url)
-            daily_exam(driver, exam_url, 1, 5)
-            weekly_exam(driver, exam_url, 1, 5)
-            special_exam(driver, exam_url, 1, 10)
+            read_articles(driver)
+            watch_videos(driver)
+            daily_exam(driver, questions_per_group=5)
+            weekly_exam(driver, questions_per_week=5)
+            special_exam(driver, questions_per_special=10)
             get_scores(driver, score_url)
 
 if __name__ == '__main__':
