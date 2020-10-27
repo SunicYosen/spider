@@ -14,8 +14,9 @@ class AutoStudyGui(QWidget):
     def __init__(self, args):
         super(AutoStudyGui, self).__init__()
         self.setWindowTitle("Auto Study")
-        self.args     = args
-        self.is_login = False
+        self.scores_num = 9
+        self.args       = args
+        self.is_login   = False
         self.load_ui()
         self.xuexi_pic_path = "xuexi.jpg"
         self.work_thread = WorkThread(self.args)
@@ -47,8 +48,8 @@ class AutoStudyGui(QWidget):
 
     def set_login(self, flag):
         if flag:
-            self.user_broswer.setText("已登录")
-            self.label.setText("已登录，欢迎学习！")
+            self.user_broswer.setText(self.work_thread.name + "已登录")
+            self.label.setText(self.work_thread.name + "已登录，欢迎学习！")
             pix   = QPixmap()
             pix.load(self.xuexi_pic_path)
             item  = QGraphicsPixmapItem(pix)
@@ -67,8 +68,17 @@ class AutoStudyGui(QWidget):
             scene.addItem(item)
             self.qrcode_viewer.setScene(scene)
 
-    def set_score(self, score_list):
-        self.score_broswer.setText(str(score_list[1])+"/"+str(score_list[0]))
+    def set_score(self, scores_list):
+        if len(scores_list[0]) < self.scores_num:
+            self.score_broswer.setText("Get Scores Error!")
+            return
+        else:
+            self.score_broswer.setText(str(scores_list[0][1])+"/"+str(scores_list[0][0]))
+            self.article_score.setText(scores_list[0][3])
+            self.video_score.setText(scores_list[0][4] + "|" + scores_list[0][5])
+            self.daily_exam_score.setText(scores_list[0][6])
+            self.weekly_exam_score.setText(scores_list[0][7])
+            self.special_exam_score.setText(scores_list[0][8])
 
     def login_bt_action(self):
         self.login_bt.clicked[bool].connect(self.login_start)
