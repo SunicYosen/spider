@@ -30,7 +30,9 @@ def get_qrcode_src(driver):
     return qrcode_src
 
 def get_qrcode_screen_pic(driver, url="https://pc.xuexi.cn/points/login.html", qrcode_path="qrcode.png", scroll_top=950, scroll_left=225):
+    print("[+]: 正在获取登录二维码，请稍候....")
     driver.get(url)
+    time.sleep(1)
     driver.execute_script("var q=document.documentElement.scrollTop={}".format(scroll_top))
     driver.execute_script("var q=document.documentElement.scrollLeft={}".format(scroll_left))
     time.sleep(1)
@@ -59,6 +61,7 @@ def login_study(driver):
     # qrcode_pic.show()
 
     try:
+        print("[+]: 正在登录,请稍候....")
         WebDriverWait(driver,60).until(EC.title_is(u"我的学习"))
         print("[+]: 登录成功!")
         return 0

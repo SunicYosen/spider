@@ -13,9 +13,15 @@ def get_daily_practice_page(driver):
         print("[-]: Get Exam Practice Page Failed!")
         exit()
 
-def daily_exam(driver, url='https://pc.xuexi.cn/points/exam-index.html', groups_num=1, questions_per_group=5):
-    print("[+]: Do Daily Exam - ", groups_num, "Group(s)", questions_per_group, "Question(s) per Group.")
-    driver.get(url)
+def daily_exam(driver, url='https://pc.xuexi.cn/points/exam-index.html', questions_per_group=5):
+    print("[+]: Do Daily Exam - ", questions_per_group, "Question(s) per Group.")
+    try:
+        driver.get(url)
+    except:
+        print("[-]: Daily Exam Failed! Get Exam Page Error!")
+        return
+    
+    time.sleep(1)
     get_daily_practice_page(driver)
     do_exam(driver)
     print("[+]: 完成每日答题！")

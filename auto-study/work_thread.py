@@ -7,6 +7,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 from init_chromedriver import init_chromedriver
 from login import login_study, check_login, get_qrcode_screen_pic
+from get_user_name import get_user_name
 from read_articles import read_articles
 from watch_videos import watch_videos
 from daily_exam import daily_exam
@@ -57,6 +58,7 @@ class WorkThread(QThread):
             self.qrcode_path = get_qrcode_screen_pic(self.driver, self.login_url)
             self.login_qrcode.emit(self.qrcode_path)
             login_study(self.driver)
+        self.name = get_user_name(self.driver, self.exam_url)
         self.is_login = True
         self.login_signal.emit(True)
 
@@ -92,8 +94,8 @@ class WorkThread(QThread):
 
     def get_scores(self):
         if self.is_login:
-            total_score, today_score = get_scores(self.driver, self.score_url)
-            self.signal_score.emit([total_score, today_score])
+            score_list, score_titles = get_scores(self.driver, self.score_url)
+            self.signal_score.emit([score_list, score_titles])
         else:
             self.signal.emit("[-]: Error Get Scores. Please Login First!")
 

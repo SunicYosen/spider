@@ -22,9 +22,16 @@ def get_weekly_last(driver):
             time.sleep(1)
             break
 
-def weekly_exam(driver, url='https://pc.xuexi.cn/points/exam-index.html', weeks_num=1, questions_per_week=5):
-    print("[+]: Do Weekly Exam - ", weeks_num, "Week(s)", questions_per_week, "Question(s) per Week.")
-    driver.get(url)
+def weekly_exam(driver, url='https://pc.xuexi.cn/points/exam-index.html', questions_per_week=5):
+    print("[+]: Do Weekly Exam - ", questions_per_week, "Question(s) per Week.")
+    try:
+        driver.get(url)
+    except:
+        print("[-]: Weekly Exam Failed! Get Exam Page Error!")
+        return
+    
+    time.sleep(1)
+    
     get_weekly_list_page(driver)
     get_weekly_last(driver)
     do_exam(driver)

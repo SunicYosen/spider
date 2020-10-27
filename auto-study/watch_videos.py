@@ -29,8 +29,8 @@ def get_videos_list(json_filename):
 
 def watch_videos(driver, json_filename="videos.json", watch_nums=6):
     videos_address, videos_lists = get_videos_list(json_filename)
-    random.seed(datetime.datetime.now())
 
+    random.seed(datetime.datetime.now())
     url_random  = random.randint(1, len(videos_address))
     for index, address_key in enumerate(videos_address):
         if index + 1 == url_random:
@@ -49,45 +49,73 @@ def watch_videos(driver, json_filename="videos.json", watch_nums=6):
     videos_per_title = math.ceil(watch_nums / len(video_title_list))
 
     """
-    观看视频
+    观看视频, 视频好像会需要每天都看新的，前一天看的算旧的，今天再看不算任务
     """
-    # 视频好像会需要每天都看新的，前一天看的算旧的，今天再看不算任务
     driver.get(video_url)
-    driver.implicitly_wait(3 + random.random())
+    driver.implicitly_wait(5 + random.random()*2)
 
-    driver.find_elements_by_xpath("//*[contains(text(), '" + video_title_key + "')]")[0].click()
-    time.sleep(2 + random.random())
+    try:
+        driver.find_elements_by_xpath("//*[contains(text(), '" + video_title_key + "')]")[0].click()
+        time.sleep(2 + random.random())
+    except:
+        print("[-]: Web Page Error. Cannot get title in page. Exiting ...")
+        return
 
     print("[+]: Watching: ", video_title_key)
+
     for title in video_title_list:
         print("[+]: - Watching: ", title)
-        driver.find_elements_by_xpath("//*[contains(text(), '" + title + "')]")[0].click()
-        time.sleep(2 + random.random())
+        try:
+            driver.find_elements_by_xpath("//*[contains(text(), '" + title + "')]")[0].click()
+            time.sleep(2 + random.random())
+        except:
+            print("[-]: Web Page Error. Cannot get subtitle Given. Trying Next ...")
+            break
 
-        #这个是直接打开页面，是图文
-        videos = driver.find_elements_by_xpath("//div[@class='textWrapper']")
-        time.sleep(1 + random.random())
+        # 这个是直接打开页面，是图文
+        try:
+            videos = driver.find_elements_by_xpath("//div[@class='textWrapper']")
+            time.sleep(1 + random.random())
+        except:
+            print("[-]: Web Page Error. Cannot get Videos. Trying Next ...")
+            break
 
         # 上面是图文选取，如果你想点到列表里面选取，则改为以下代码：
-        # titles = driver.find_elements_by_xpath("//*[contains(text(), '列表')]")[0]
-        # titles.click()
-        # videos = driver.find_elements_by_xpath("//div[@class='text-link-item-title']")
+        # try:
+        #     titles = driver.find_elements_by_xpath("//*[contains(text(), '列表')]")[0]
+        #     titles.click()
+        #     videos = driver.find_elements_by_xpath("//div[@class='text-link-item-title']")
+        # except:
+        #     print("[-]: Web Page Error. Cannot get List Mode. Trying Next ...")
+        #     break
+        
 
         # for i, video in enumerate(videos):
         for i in range(videos_per_title):
             video_index = random.randint(0, len(videos)-1)
             video       = videos[video_index]
-            video.click()
-            all_handles = driver.window_handles
-            driver.switch_to.window(all_handles[-1])
-            time.sleep(0.1+random.random())
+
+            try:
+                video.click()
+                all_handles = driver.window_handles
+                driver.switch_to.window(all_handles[-1])
+                time.sleep(0.1+random.random())
+            except:
+                print("[-]: Error Watching Videos! Can not get into videos page! Trying Next...")
+                break
 
             #模拟点击播放，因为直接点开连接播放，积分不会增长，可能也是因为反爬机制，必须刷新页面后，点击播放才算做是观看一次
-            driver.get(driver.current_url)
-            print("[+]: --", i+1, '/', 2, '\t', driver.current_url)
+            try:
+                driver.get(driver.current_url)
+                print("[+]: --", i+1, '/', 2, '\t', driver.current_url)
 
-            driver.find_element_by_xpath("//div[@class='outter']").click()
-            time.sleep(3 + random.random())
+                driver.find_element_by_xpath("//div[@class='outter']").click()
+                time.sleep(3 + random.random())
+
+            except:
+                print("[-]: Error Watching Videos! Cannot Click to start! Trying Next...")
+                break
+
 
             # 可以获取视频当前时长，但是没有必要，只要看3分钟就好了
             # video_current_time_str = driver.find_element_by_xpath("//span[@class='current-time']").get_attribute('innerText')
@@ -95,6 +123,7 @@ def watch_videos(driver, json_filename="videos.json", watch_nums=6):
             # video_duration = int(video_duration_str.split(':')[0]) * 60 + int(video_duration_str.split(':')[1])
 
             # 每个视频开启后停留190秒，然后把所有句柄关闭
+            print("[+]: -- Watching ...")
             time.sleep(180 + random.random()*10)
             driver.close()
             driver.switch_to.window(all_handles[0])

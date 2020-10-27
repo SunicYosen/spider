@@ -46,18 +46,29 @@ def read_articles(driver, csv_filename="articles.csv", read_mode=1):
             read_num = read_mode
 
         driver.get(articles_list_url)
-        driver.implicitly_wait(3 + random.randint(0, 2))
+        driver.implicitly_wait(5 + random.randint(0, 2))
 
-        articles = driver.find_elements_by_xpath("//div[@class='text-link-item-title']")
+        try:
+            articles = driver.find_elements_by_xpath("//div[@class='text-link-item-title']")
+        except:
+            articles = []
+            print("[-]: Web page error! Can not get articles!")
+
+        time.sleep(1 + random.random())
+        
         for index, article in enumerate(articles):
-            if index > read_num-1:
+            if index > read_num - 1:
                 break
 
-            article.click()
-            all_handles = driver.window_handles
-            driver.switch_to.window(all_handles[-1])
-            driver.get(driver.current_url)
-            print("[+]: --", index + 1, '/', read_num, '\t', driver.current_url)
+            try: 
+                article.click()
+                all_handles = driver.window_handles
+                driver.switch_to.window(all_handles[-1])
+                driver.get(driver.current_url)
+                print("[+]: --", index + 1, '/', read_num, '\t', driver.current_url)
+            except:
+                print("[-]: -- Reading Error! Can not get into article!")
+                break
             
             # Scroll down
             for i in range(0, 2000, 100):
