@@ -3,7 +3,7 @@ import sys
 
 from PIL import Image
 from PyQt5 import uic
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QApplication, qApp, QGraphicsPixmapItem, QGraphicsScene
 from PyQt5.QtCore import QEventLoop, QCoreApplication
 
@@ -18,7 +18,9 @@ class AutoStudyGui(QWidget):
         self.args       = args
         self.is_login   = False
         self.load_ui()
-        self.xuexi_pic_path = "xuexi.jpg"
+        self.xuexi_pic_path  = "icons/xuexi.jpg"
+        self.xuexi_logo_path = "icons/xuexi.png"
+        self.setWindowIcon(QIcon(self.xuexi_logo_path))
         self.work_thread = WorkThread(self.args)
         self.work_thread.signal.connect(self.write)
         self.work_thread.login_signal.connect(self.set_login)
