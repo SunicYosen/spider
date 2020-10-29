@@ -56,7 +56,7 @@ def choose_question(driver, rough_answer_array, clicked_flag):
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
         driver.find_elements_by_tag_name("button")[0].click()
     except:
-        print("[-]: Click Next Question Failed!")
+        print("[-]: Choose Question. Click Sure Failed!")
         return
 
     time.sleep(1 + random.random()*2)
@@ -77,7 +77,7 @@ def blank_question(driver, rough_answer_array):
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_class_name("question")[0])
         blankArr = driver.find_elements_by_class_name("blank")
     except:
-        print("[-]: Find Blak Failed!")
+        print("[-]: Find Blank Failed!")
         return
 
     for i in range(len(blankArr)):
@@ -90,7 +90,7 @@ def blank_question(driver, rough_answer_array):
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
         driver.find_elements_by_tag_name("button")[0].click()
     except:
-        print("[-]: Click Next Question Failed!")
+        print("[-]: Blank Question. Click Sure Failed!")
         return
 
     time.sleep(1 + random.random()*2)
@@ -122,7 +122,7 @@ def other_question(driver):
         driver.execute_script("arguments[0].scrollIntoView();", driver.find_elements_by_tag_name("button")[0])
         driver.find_elements_by_tag_name("button")[0].click()
     except:
-        print("[-]: Click Next Question Failed!")
+        print("[-]:Other Question. Click Sure Failed!")
         return
     
     time.sleep(1 + random.random()*2)
@@ -261,27 +261,19 @@ def do_exam(driver, questions_per_group=5):
                 print("[-] Try to open tips Error! Trying again ... ")
                 break
 
+            time.sleep(0.5 + random.random())
+
             if (driver.find_elements_by_class_name("line-feed")[0].get_attribute("innerText") == "请观看视频"):
-                try:
-                    driver.find_elements_by_class_name("tips")[0].click()
-                    video_question(driver)
-                except:
-                    print("[-] Video Question Error!")
-                    break
+                video_question(driver)
 
-            # Get Rough Answer from tips
-            get_rough_answer(driver, rough_answer_array)
-            time.sleep(1 + random.random()*2)
+            else:
+                # Get Rough Answer from tips
+                get_rough_answer(driver, rough_answer_array)
 
-            try:
-                # Close tips
-                driver.find_elements_by_class_name("tips")[0].click()
-            except:
-                print("[-]: Close tips Error! Trying again ...")
-                break
+            if len(driver.find_elements_by_class_name("ant-popover-open")) != 0:
+                driver.find_elements_by_class_name("q-footer")[0].click()
 
             time.sleep(1 + random.random()*2)
-            # print(rough_answer_array)
 
         try:
             # Scroll to question
