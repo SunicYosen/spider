@@ -6,4 +6,11 @@ Web Spider Toys
 
 Get info of Global 500 form [https://www.caifuzhongwen.com/fortune500/paiming/global500/2020_%E4%B8%96%E7%95%8C500%E5%BC%BA.htm](https://www.caifuzhongwen.com/fortune500/paiming/global500/2020_%E4%B8%96%E7%95%8C500%E5%BC%BA.htm)
 
-## 
+## [Auto Study](auto-study)
+
+Auto study for [https://www.xuexi.cn/](https://www.xuexi.cn/)
+
+## [CONV19](conv19)
+
+Get Conv19 Data from [https://www.zq-ai.com/#/fe/xgfybigdata](https://www.zq-ai.com/#/fe/xgfybigdata)
+
