@@ -18,7 +18,8 @@ def main():
         exit()
 
     if(os.path.exists(write_file_temp)):
-        os.remove(write_file_temp)
+        # os.remove(write_file_temp)
+        pass
 
     
 if __name__ == '__main__':

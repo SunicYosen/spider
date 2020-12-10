@@ -28,7 +28,7 @@ def get_data(url, write_file='data_temp.json', write_type='a'):
     options.add_argument(user_data_path)
     driver         = webdriver.Chrome(options=options)
 
-    for index in range(data_city_nums):
+    for index in range(150,405):
         page_index     = int(index / data_city_per_page) + 1
         index_in_pages = (index % data_city_per_page) + 1
 
