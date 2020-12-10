@@ -14,3 +14,7 @@ Auto study for [https://www.xuexi.cn/](https://www.xuexi.cn/)
 
 Get Conv19 Data from [https://www.zq-ai.com/#/fe/xgfybigdata](https://www.zq-ai.com/#/fe/xgfybigdata)
 
+## [PingXiaoBao](pingxiaobao)
+
+Get Pingxiao Data from [http://agent.pingxiaobao.com/#/device/districtReport](http://agent.pingxiaobao.com/#/device/districtReport)
+
