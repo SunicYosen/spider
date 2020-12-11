@@ -28,7 +28,7 @@ def get_data(url, write_file='data_temp.json', write_type='a'):
     options.add_argument(user_data_path)
     driver         = webdriver.Chrome(options=options)
 
-    for index in range(150,405):
+    for index in range(400,404):
         page_index     = int(index / data_city_per_page) + 1
         index_in_pages = (index % data_city_per_page) + 1
 
@@ -37,6 +37,9 @@ def get_data(url, write_file='data_temp.json', write_type='a'):
         driver.get(url)
         time.sleep(1)
 
+        if (index_in_pages == 1):
+            time.sleep(3)
+
         goto_basic_page(driver, label=data_label, page_number=page_index)
         time.sleep(1)
 
@@ -44,6 +47,7 @@ def get_data(url, write_file='data_temp.json', write_type='a'):
         time.sleep(1)
 
         print('{}/{}'.format(index+1, data_city_nums), page_index, city.city_rank, city.city_name, city.city_point, city.city_screens)
+        
         goto_device_types_page(driver, current_line=index_in_pages, label=data_sub_label1)
         time.sleep(1)
 
