@@ -109,3 +109,29 @@ class City:
             except:
                 print("[-] Get Device Scenes Info Failed!")
                 exit()
+
+    def get_total_type_points(self):
+        points = 0
+        for device_type in self.city_device_types_distribution:
+            if(self.city_name == '路凼填海区'):
+                print(self.city_device_types_distribution)
+            points += self.city_device_types_distribution[device_type]['点位数量']
+
+        self.total_type_points = points
+
+    def get_total_scene_points(self):
+        points = 0
+        for device_scene in self.city_device_scenes_distribution:
+            points += self.city_device_scenes_distribution[device_scene]['点位数量']
+
+        self.total_scene_points = points
+
+    def set_city_from_dict(self, city_dict):
+        self.city_name = city_dict['城市']
+        self.city_rank = city_dict['城市分类']
+        self.city_province = city_dict['省份']
+        self.city_location = city_dict['所属地区']
+        self.city_point    = city_dict['点位数量']
+        self.city_screens  = city_dict['屏幕数量']
+        self.city_device_types_distribution = city_dict['类型分布']
+        self.city_device_scenes_distribution = city_dict['场景分布']
