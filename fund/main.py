@@ -27,5 +27,7 @@ def main():
         
     write_excel(fund_data_dict, excel_file=data_excel)
 
+    input("Any Key To Exit ...")
+
 if __name__ == '__main__':
     main()

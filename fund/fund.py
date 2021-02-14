@@ -3,8 +3,6 @@
 '''
 import re
 import time
-import platform
-# import requests
 from lxml import etree
 from selenium import webdriver
 
@@ -15,8 +13,10 @@ class Fund:
         self.name                             = ''
         self.code                             = '000000'
         self.current_valuation                = ''
+        self.current_valuation_date           = ''
         self.current_valuation_increase       = ''
         self.latest_net_value                 = ''
+        self.latest_net_value_date            = ''
         self.latest_net_value_increase        = ''
         self.top10_holdings_proportion_growth = {'items':[], 'total':'', 'date':''}
         self.latest10_days_net_value_increase = []
@@ -26,27 +26,17 @@ class Fund:
         self.latest_scale                     = ''
         self.date_scale_change_url            = ''
         self.date_scale_change                = []
-        self.date_turnover_rate               = ''
+        self.date_turnover_rate               = []
 
     def __get_date_scale_change_html_source(self, url):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        # options.add_argument("--user-data-dir=/home/sun/.config/google-chrome/Default")
-        # driver  = webdriver.Chrome(options=options)
-
-        if platform.system().lower() == 'linux':
-            driver = webdriver.Chrome(options=options)
-        elif platform.system().lower() == 'windows':
-            driver = webdriver.Chrome('./tools/win/chromedriver.exe', options=options)
-        else:
-            print('[-] Error', str(platform.system()), 'not supported!')
-            exit()
+        driver  = webdriver.Chrome(options=options)
 
         driver.get(url)
         time.sleep(0.1)
 
         buttons = driver.find_elements_by_class_name("ip_tips_btn")
-
         for button in buttons:
             if button.get_attribute("innerText") == "立即开启":
                 driver.execute_script("arguments[0].scrollIntoView();", button)
@@ -94,6 +84,13 @@ class Fund:
             print('[-] Warning: Get Current Valuation Failed!')
             self.current_valuation  = ''
 
+    def get_current_valuation_date(self):
+        try:
+            self.current_valuation_date  = self.html_tree.xpath('.//div[@class="dataOfFund"]/dl[1]/dt/p/span[2]/text()')[0]
+        except:
+            print('[-] Warning: Get Current Valuation Date Failed!')
+            self.current_valuation_date  = ''
+
     def get_current_valuation_increase(self):
         try:
             self.current_valuation_increase   = self.html_tree.xpath('.//div[@class="dataOfFund"]/dl[1]/dd/dl[3]/span[2]/text()')[0]
@@ -107,6 +104,13 @@ class Fund:
         except:
             print('[-] Warning: Get Latest Net Value Info Failed!')
             self.latest_net_value  = ''
+
+    def get_latest_net_value_date(self):
+        try:
+            self.latest_net_value_date  = self.html_tree.xpath('.//div[@class="dataOfFund"]/dl[2]/dt/p/text()')[0].replace(')','').replace('(','')
+        except:
+            print('[-] Warning: Get Latest Net Value Date Info Failed!')
+            self.latest_net_value_date  = ''
 
     def get_latest_net_value_increase(self):
         try:
@@ -171,13 +175,16 @@ class Fund:
             quotation_items_left = self.html_tree.xpath('.//div[@class="quotationItem_left"]')[1]
             top10_holdings       = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/table/tbody')[0]
             for i in range(2, 12):
-                date       = top10_holdings.xpath('./tr[{}]/td[1]/text()'.format(i))[0]
-                value      = top10_holdings.xpath('./tr[{}]/td[2]/text()'.format(i))[0]
-                growth     = top10_holdings.xpath('./tr[{}]/td[4]/span/text()'.format(i))[0]
-                self.latest10_days_net_value_increase.append([date, value, growth])
+                try:
+                    date       = top10_holdings.xpath('./tr[{}]/td[1]/text()'.format(i))[0]
+                    value      = top10_holdings.xpath('./tr[{}]/td[2]/text()'.format(i))[0]
+                    growth     = top10_holdings.xpath('./tr[{}]/td[4]/span/text()'.format(i))[0]
+                    self.latest10_days_net_value_increase.append([date, value, growth])
+                except:
+                    break
         except:
             print('[-] Warning: Get Lastest 10 Days Info Failed!')
-            self.latest10_days_net_value_increase   = {}
+            self.latest10_days_net_value_increase   = []
 
     def get_date_scale_change_url(self):
         try:
@@ -191,8 +198,8 @@ class Fund:
         html_text = self.__get_date_scale_change_html_source(self.date_scale_change_url)
         html_tree = etree.HTML(html_text)
 
-        # with open('test_gmbd.html', 'w', encoding='utf-8') as html_file: 
-        #     html_file.write(html_text)
+        with open('test_gmbd.html', 'w', encoding='utf-8') as html_file: 
+            html_file.write(html_text)
 
         change_data  = []
         change_table = html_tree.xpath('//*[@id="gmbdtable"]/table/tbody')[0]
@@ -208,21 +215,29 @@ class Fund:
         self.date_scale_change = change_data
 
     def get_date_turnover_rate(self):
+
         try:
             quotation_items_left = self.html_tree.xpath('.//div[@class="quotationItem_left quotationItem_left02"]')[0]
-            self.date_turnover_rate = quotation_items_left.xpath('./div[5]/div[2]/ul/li[2]/div/table/tbody/tr[2]/td[1]/text()')[0] + ': '\
-                                    + quotation_items_left.xpath('./div[5]/div[2]/ul/li[2]/div/table/tbody/tr[2]/td[2]/text()')[0]
+            for i in range(2, 12):
+                try:
+                    date       = quotation_items_left.xpath('./div[5]/div[2]/ul/li[2]/div/table/tbody/tr[{}]/td[1]/text()'.format(i))[0]
+                    value      = quotation_items_left.xpath('./div[5]/div[2]/ul/li[2]/div/table/tbody/tr[{}]/td[2]/text()'.format(i))[0]
+                    self.date_turnover_rate.append([date, value])
+                except:
+                    break
         except:
             print('[-] Warning: Get Date Turnover Failed!')
-            self.date_turnover_rate = ''
+            self.date_turnover_rate = []
 
     def get_all_data(self):
         self.get_html_tree()
         self.get_name()
         self.get_code()
         self.get_current_valuation()
+        self.get_current_valuation_date()
         self.get_current_valuation_increase()
         self.get_latest_net_value()
+        self.get_latest_net_value_date()
         self.get_latest_net_value_increase()
         self.get_manager_name()
         self.get_setup_date()
@@ -264,12 +279,20 @@ class Fund:
             item_datas += '\n'
             data_scale_change_data += item_datas
 
+        turnover_rates_data = ''
+        for turnover_rate_item in self.date_turnover_rate:
+            item_datas = ''
+            for item_data in turnover_rate_item:
+                item_datas += (item_data + ' ')
+            item_datas += '\n'
+            turnover_rates_data += item_datas
+
         data_array     = [self.name,
                           self.code,
-                          self.current_valuation,
-                          self.current_valuation_increase,
-                          self.latest_net_value,
-                          self.latest_net_value_increase, 
+                          self.current_valuation + '(' + self.current_valuation_date + ')',
+                          self.current_valuation_increase + '(' + self.current_valuation_date + ')',
+                          self.latest_net_value + '(' + self.latest_net_value_date + ')',
+                          self.latest_net_value_increase + '(' + self.latest_net_value_date + ')', 
                           top10_holdings_data,
                           latest10_days_data,
                           self.manager_name,
@@ -277,7 +300,7 @@ class Fund:
                           self.latest_date,
                           self.latest_scale,
                           data_scale_change_data,
-                          self.date_turnover_rate
+                          turnover_rates_data
         ]
 
         return data_array
@@ -289,7 +312,6 @@ def test():
     fund_example.get_all_data()
     data_array = fund_example.get_data_array()
     print(data_array)
-    print(fund_example.date_scale_change)
 
 if __name__ == '__main__':
     test()
