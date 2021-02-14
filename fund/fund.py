@@ -27,17 +27,41 @@ class Fund:
         self.date_scale_change                = []
         self.date_turnover_rate               = ''
 
+    def __get_date_scale_change_html_source(self, url):
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        options.add_argument("--user-data-dir=/home/sun/.config/google-chrome/Default")
+        driver  = webdriver.Chrome(options=options)
+        driver.get(url)
+        time.sleep(0.1)
+
+        buttons = driver.find_elements_by_class_name("ip_tips_btn")
+
+        for button in buttons:
+            if button.get_attribute("innerText") == "立即开启":
+                driver.execute_script("arguments[0].scrollIntoView();", button)
+                button.click()
+                time.sleep(0.5)
+                break
+
+        scale_change_html_source = driver.page_source
+        driver.quit()
+        return scale_change_html_source
+
     def get_html_tree(self):
         try:
-            html_text  = requests.get(self.url).text.encode('iso-8859-1').decode('utf-8')
+            html_text  = self.__get_date_scale_change_html_source(self.url)
             time.sleep(0.1)
 
-            # with open('test.html', 'w', encoding='utf-8') as html_file:
-            #     html_file.write(html_text)
+            with open('test.html', 'w', encoding='utf-8') as html_file:
+                html_file.write(html_text)
+
             self.html_tree = etree.HTML(html_text)
+
         except:
             print('[-] Warning: Get HTML Tree Failed!')
             self.html_tree = None
+
 
     def get_name(self):
         try:
@@ -55,14 +79,14 @@ class Fund:
             
     def get_current_valuation(self):
         try:
-            self.current_valuation  = self.html_tree.xpath('.//div[@class="dataOfFund"]/dl[1]/dd/dl/span[1]/text()')[0]
+            self.current_valuation  = self.html_tree.xpath('.//div[@class="dataOfFund"]/dl[1]/dd/dl[1]/span[1]/text()')[0]
         except:
             print('[-] Warning: Get Current Valuation Failed!')
             self.current_valuation  = ''
 
     def get_current_valuation_increase(self):
         try:
-            self.current_valuation_increase   = self.html_tree.xpath('.//div[@class="dataOfFund"]/dl[1]/dd/dl/span[2]/text()')[0]
+            self.current_valuation_increase   = self.html_tree.xpath('.//div[@class="dataOfFund"]/dl[1]/dd/dl[3]/span[2]/text()')[0]
         except:
             print('[-] Warning: Get Current Valuation Increase Failed!')
             self.current_valuation_increase   = ''
@@ -83,28 +107,28 @@ class Fund:
 
     def get_manager_name(self):
         try:
-            self.manager_name = self.html_tree.xpath('.//div[@class="infoOfFund"]/table/tr[1]/td[3]/a/text()')[0]
+            self.manager_name = self.html_tree.xpath('.//div[@class="infoOfFund"]/table/tbody/tr[1]/td[3]/a/text()')[0]
         except:
-            print('[-] Warning: Get Manger Name Date Info Failed!')
+            print('[-] Warning: Get Manger Name Failed!')
             self.manager_name = ''
 
     def get_setup_date(self):
         try:
-            self.setup_date = self.html_tree.xpath('.//div[@class="infoOfFund"]/table/tr[2]/td[1]/text()')[0].replace('：','')
+            self.setup_date = self.html_tree.xpath('.//div[@class="infoOfFund"]/table/tbody/tr[2]/td[1]/text()')[0].replace('：','')
         except:
             print('[-] Warning: Get Setup Date Info Failed!')
             self.setup_date = ''
             
     def get_latest_date(self):
         try:
-            self.latest_date = self.html_tree.xpath('.//div[@class="infoOfFund"]/table/tr[1]/td[2]/text()')[0].replace('：','').split('（')[1].replace('）','')
+            self.latest_date = self.html_tree.xpath('.//div[@class="infoOfFund"]/table/tbody/tr[1]/td[2]/text()')[0].replace('：','').split('（')[1].replace('）','')
         except:
             print('[-] Warning: Get Latest Date Info Failed!')
             self.latest_date = ''
 
     def get_latest_scale(self):
         try:
-            self.latest_scale = self.html_tree.xpath('.//div[@class="infoOfFund"]/table/tr[1]/td[2]/text()')[0].replace('：','').split('（')[0]
+            self.latest_scale = self.html_tree.xpath('.//div[@class="infoOfFund"]/table/tbody/tr[1]/td[2]/text()')[0].replace('：','').split('（')[0]
         except:
             print('[-] Warning: Get Latest Scale Info Failed!')
             self.latest_scale = ''
@@ -112,7 +136,7 @@ class Fund:
     def get_top10_holdings_proportion_growth(self):
         try:
             quotation_items_left = self.html_tree.xpath('.//div[@class="quotationItem_left"]')[0]
-            top10_holdings       = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/table')[0]
+            top10_holdings       = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/table/tbody')[0]
             for i in range(2, 12):
                 stock_name       = top10_holdings.xpath('./tr[{}]/td[1]/a/text()'.format(i))[0]
                 stock_proportion = top10_holdings.xpath('./tr[{}]/td[2]/text()'.format(i))[0]
@@ -127,12 +151,12 @@ class Fund:
             # print(self.top10_holdings_proportion_growth)
         except:
             print('[-] Warning: Get Top10 Holdings Info Failed!')
-            self.top10_holdings_proportion_growth   = {}
+            self.top10_holdings_proportion_growth   = {'items':[], 'total':'', 'date':''}
 
     def get_latest10_days_net_value_increase(self):
         try:
             quotation_items_left = self.html_tree.xpath('.//div[@class="quotationItem_left"]')[1]
-            top10_holdings       = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/table')[0]
+            top10_holdings       = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/table/tbody')[0]
             for i in range(2, 12):
                 date       = top10_holdings.xpath('./tr[{}]/td[1]/text()'.format(i))[0]
                 value      = top10_holdings.xpath('./tr[{}]/td[2]/text()'.format(i))[0]
@@ -149,16 +173,6 @@ class Fund:
         except:
             print('[-] Warning: Get Date Scale Change URL Failed!')
             self.date_scale_change_url = ''
-
-    def __get_date_scale_change_html_source(self, url):
-        options = webdriver.ChromeOptions()
-        options.add_argument('headless')
-        driver  = webdriver.Chrome(options=options)
-        driver.get(url)
-        time.sleep(0.1)
-        scale_change_html_source = driver.page_source
-        driver.quit()
-        return scale_change_html_source
 
     def get_date_scale_change(self):
         html_text = self.__get_date_scale_change_html_source(self.date_scale_change_url)
@@ -217,6 +231,7 @@ class Fund:
                 item_datas += (item_data + ' ')
             item_datas += '\n'
             top10_holdings_data += item_datas
+
         top10_holdings_data += (self.top10_holdings_proportion_growth['total']+'\n')
         top10_holdings_data += self.top10_holdings_proportion_growth['date']
 
