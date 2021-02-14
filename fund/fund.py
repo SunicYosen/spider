@@ -5,6 +5,7 @@ import re
 import time
 import requests
 from lxml import etree
+from selenium import webdriver
 
 class Fund:
     def __init__(self, url):
@@ -31,8 +32,8 @@ class Fund:
             html_text  = requests.get(self.url).text.encode('iso-8859-1').decode('utf-8')
             time.sleep(0.1)
 
-            with open('test.html', 'w', encoding='utf-8') as html_file:
-                html_file.write(html_text)
+            # with open('test.html', 'w', encoding='utf-8') as html_file:
+            #     html_file.write(html_text)
             self.html_tree = etree.HTML(html_text)
         except:
             print('[-] Warning: Get HTML Tree Failed!')
@@ -149,8 +150,35 @@ class Fund:
             print('[-] Warning: Get Date Scale Change URL Failed!')
             self.date_scale_change_url = ''
 
+    def __get_date_scale_change_html_source(self, url):
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        driver  = webdriver.Chrome(options=options)
+        driver.get(url)
+        time.sleep(0.1)
+        scale_change_html_source = driver.page_source
+        driver.quit()
+        return scale_change_html_source
+
     def get_date_scale_change(self):
-        pass
+        html_text = self.__get_date_scale_change_html_source(self.date_scale_change_url)
+        html_tree = etree.HTML(html_text)
+
+        # with open('test_gmbd.html', 'w', encoding='utf-8') as html_file: 
+        #     html_file.write(html_text)
+
+        change_data  = []
+        change_table = html_tree.xpath('//*[@id="gmbdtable"]/table/tbody')[0]
+
+        for i in range(1, 10):
+            try:
+                item_date = change_table.xpath('./tr[{}]/td[1]/text()'.format(i))[0]
+                item_assets = change_table.xpath('./tr[{}]/td[5]/text()'.format(i))[0]
+                change_data.append([item_date, item_assets])
+            except:
+                break
+
+        self.date_scale_change = change_data
 
     def get_date_turnover_rate(self):
         try:
@@ -234,6 +262,7 @@ def test():
     fund_example.get_all_data()
     data_array = fund_example.get_data_array()
     print(data_array)
+    print(fund_example.date_scale_change)
 
 if __name__ == '__main__':
     test()
