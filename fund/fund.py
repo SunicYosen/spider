@@ -3,7 +3,8 @@
 '''
 import re
 import time
-import requests
+import platform
+# import requests
 from lxml import etree
 from selenium import webdriver
 
@@ -30,8 +31,17 @@ class Fund:
     def __get_date_scale_change_html_source(self, url):
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
-        options.add_argument("--user-data-dir=/home/sun/.config/google-chrome/Default")
-        driver  = webdriver.Chrome(options=options)
+        # options.add_argument("--user-data-dir=/home/sun/.config/google-chrome/Default")
+        # driver  = webdriver.Chrome(options=options)
+
+        if platform.system().lower() == 'linux':
+            driver = webdriver.Chrome(options=options)
+        elif platform.system().lower() == 'windows':
+            driver = webdriver.Chrome('./tools/win/chromedriver.exe', options=options)
+        else:
+            print('[-] Error', str(platform.system()), 'not supported!')
+            exit()
+
         driver.get(url)
         time.sleep(0.1)
 
