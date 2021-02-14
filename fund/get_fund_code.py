@@ -9,7 +9,12 @@ def get_fund_code(excel_file='data.xlsx'):
     code_re         = r'^\d{6}$'
     fund_code_array = []
 
-    wb          = load_workbook(excel_file)
+    try:
+        wb          = load_workbook(excel_file)
+    except:
+        print("[-] Error: Load {} Failed!".format(excel_file))
+        exit()
+        
     name_list   = wb.sheetnames
     my_sheet    = wb[name_list[0]]
 

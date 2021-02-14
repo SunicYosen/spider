@@ -8,7 +8,11 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Fo
 
 def write_excel(data_dict={}, excel_file='data.xlsx'):
     code_re     = r'^\d{6}$'
-    wb          = load_workbook(excel_file)
+    try:
+        wb          = load_workbook(excel_file)
+    except:
+        print("[-] Error: Load {} Failed!".format(excel_file))
+        exit()
 
     name_list   = wb.sheetnames
     my_sheet    = wb[name_list[0]]
