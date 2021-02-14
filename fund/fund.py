@@ -138,10 +138,13 @@ class Fund:
             quotation_items_left = self.html_tree.xpath('.//div[@class="quotationItem_left"]')[0]
             top10_holdings       = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/table/tbody')[0]
             for i in range(2, 12):
-                stock_name       = top10_holdings.xpath('./tr[{}]/td[1]/a/text()'.format(i))[0]
-                stock_proportion = top10_holdings.xpath('./tr[{}]/td[2]/text()'.format(i))[0]
-                stock_growth     = top10_holdings.xpath('./tr[{}]/td[3]/span/text()'.format(i))[0]
-                self.top10_holdings_proportion_growth['items'].append([stock_name, stock_proportion, stock_growth])
+                try:
+                    stock_name       = top10_holdings.xpath('./tr[{}]/td[1]/a/text()'.format(i))[0]
+                    stock_proportion = top10_holdings.xpath('./tr[{}]/td[2]/text()'.format(i))[0]
+                    stock_growth     = top10_holdings.xpath('./tr[{}]/td[3]/span/text()'.format(i))[0]
+                    self.top10_holdings_proportion_growth['items'].append([stock_name, stock_proportion, stock_growth])
+                except:
+                    break
             
             self.top10_holdings_proportion_growth['total'] = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/p/span[1]/a/text()')[0] \
                                                            + quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/p/span[2]/text()')[0]
