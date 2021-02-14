@@ -18,3 +18,7 @@ Get Conv19 Data from [https://www.zq-ai.com/#/fe/xgfybigdata](https://www.zq-ai.
 
 Get Pingxiao Data from [http://agent.pingxiaobao.com/#/device/districtReport](http://agent.pingxiaobao.com/#/device/districtReport)
 
+## [Fund](fund)
+
+Get fund data from [http://fund.eastmoney.com/](http://fund.eastmoney.com/)
+
