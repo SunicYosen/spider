@@ -18,14 +18,13 @@ def main():
 
     fund_code_array = get_fund_code(data_excel)
     fund_data_dict  = {}
-    
     for fund_code in fund_code_array:
         fund_url = base_url + '/' + fund_code + '.html'
         fund     = Fund(fund_url)
         fund.get_all_data()
         fund_data_dict.update({fund_code:fund})
-        print("[+] Info: {}:{}".format(fund_code, fund.name))
-
+        print("[+] Info: {}:{} Done!".format(fund_code, fund.name))
+        
     write_excel(fund_data_dict, excel_file=data_excel)
 
 if __name__ == '__main__':
