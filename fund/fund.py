@@ -208,7 +208,6 @@ class Fund:
         self.get_date_turnover_rate()
 
     def get_data_array(self):
-        self.get_all_data()
         data_array = []
         top10_holdings_data = ''
 
