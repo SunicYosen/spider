@@ -23,7 +23,7 @@ class Fund:
         self.latest_date                      = ''
         self.latest_scale                     = ''
         self.date_scale_change_url            = ''
-        self.date_scale_change                = ''
+        self.date_scale_change                = []
         self.date_turnover_rate               = ''
 
     def get_html_tree(self):
@@ -115,14 +115,15 @@ class Fund:
             for i in range(2, 12):
                 stock_name       = top10_holdings.xpath('./tr[{}]/td[1]/a/text()'.format(i))[0]
                 stock_proportion = top10_holdings.xpath('./tr[{}]/td[2]/text()'.format(i))[0]
-                stock_growth     = top10_holdings.xpath('./tr[{}]/td[3]/text()'.format(i))[0]
+                stock_growth     = top10_holdings.xpath('./tr[{}]/td[3]/span/text()'.format(i))[0]
                 self.top10_holdings_proportion_growth['items'].append([stock_name, stock_proportion, stock_growth])
-
+            
             self.top10_holdings_proportion_growth['total'] = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/p/span[1]/a/text()')[0] \
                                                            + quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div/p/span[2]/text()')[0]
 
             self.top10_holdings_proportion_growth['date'] = quotation_items_left.xpath('./div[2]/div[2]/ul/li[1]/div[2]/span/text()')[0]
 
+            # print(self.top10_holdings_proportion_growth)
         except:
             print('[-] Warning: Get Top10 Holdings Info Failed!')
             self.top10_holdings_proportion_growth   = {}
@@ -177,15 +178,62 @@ class Fund:
         self.get_date_scale_change_url()
         self.get_date_scale_change()
         self.get_date_turnover_rate()
-        
+
+    def get_data_array(self):
+        self.get_all_data()
+        data_array = []
+        top10_holdings_data = ''
+
+        for top10_holding_item in self.top10_holdings_proportion_growth['items']:
+            item_datas = ''
+            for item_data in top10_holding_item:
+                item_datas += (item_data + ' ')
+            item_datas += '\n'
+            top10_holdings_data += item_datas
+        top10_holdings_data += (self.top10_holdings_proportion_growth['total']+'\n')
+        top10_holdings_data += self.top10_holdings_proportion_growth['date']
+
+        latest10_days_data = ''
+        for latest10_days_item in self.latest10_days_net_value_increase:
+            item_datas = ''
+            for item_data in latest10_days_item:
+                item_datas += (item_data + ' ')
+            item_datas += '\n'
+            latest10_days_data += item_datas
+
+        data_scale_change_data = ''
+        for data_scale_change_item in self.date_scale_change:
+            item_datas = ''
+            for item_data in data_scale_change_item:
+                item_datas += (item_data + ' ')
+            item_datas += '\n'
+            data_scale_change_data += item_datas
+
+        data_array     = [self.name,
+                          self.code,
+                          self.current_valuation,
+                          self.current_valuation_increase,
+                          self.latest_net_value,
+                          self.latest_net_value_increase, 
+                          top10_holdings_data,
+                          latest10_days_data,
+                          self.manager_name,
+                          self.setup_date,
+                          self.latest_date,
+                          self.latest_scale,
+                          data_scale_change_data,
+                          self.date_turnover_rate
+        ]
+
+        return data_array
 
 def test():
     url          = 'http://fund.eastmoney.com/008903.html'
 
     fund_example = Fund(url=url)
     fund_example.get_all_data()
-
-    print(fund_example.date_turnover_rate)
+    data_array = fund_example.get_data_array()
+    print(data_array)
 
 if __name__ == '__main__':
     test()
