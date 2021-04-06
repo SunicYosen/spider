@@ -16,6 +16,11 @@ def init_chromedriver(show_flag=False):
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--mute-audio')
+    
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_experimental_option('useAutomationExtension', False)
+    chrome_options.add_argument("disable-blink-features=AutomationControlled")
+
     user_data_path = get_usr_data_dir()
     chrome_options.add_argument(user_data_path)
 
