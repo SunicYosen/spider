@@ -18,7 +18,7 @@ class AutoStudyGui(QWidget):
         self.args       = args
         self.is_login   = False
         self.load_ui()
-        self.xuexi_pic_path  = "icons/xuexi.jpg"
+        self.xuexi_pic_path  = "icons/100th.png"
         self.xuexi_logo_path = "icons/xuexi.png"
         self.setWindowIcon(QIcon(self.xuexi_logo_path))
         self.work_thread = WorkThread(self.args)
