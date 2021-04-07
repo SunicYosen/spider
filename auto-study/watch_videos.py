@@ -27,7 +27,8 @@ def get_videos_list(json_filename):
 
     return videos_address, videos_lists
 
-def watch_videos(driver, json_filename="videos.json", watch_nums=6):
+def watch_videos(driver, json_filename="data/videos.json", watch_nums=6):
+    json_filename   = os.path.join(os.path.dirname(__file__), json_filename)
     videos_address, videos_lists = get_videos_list(json_filename)
 
     random.seed(datetime.datetime.now())

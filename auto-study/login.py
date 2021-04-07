@@ -30,7 +30,7 @@ def get_qrcode_src(driver):
     qrcode_src   = login_qrcode[0].get_attribute('src')
     return qrcode_src
 
-def get_qrcode_screen_pic(driver, url="https://pc.xuexi.cn/points/login.html", qrcode_path="qrcode.png", scroll_top=950, scroll_left=225):
+def get_qrcode_screen_pic(driver, url="https://pc.xuexi.cn/points/login.html", qrcode_path="data/qrcode.png", scroll_top=950, scroll_left=225):
     print("[+]: 正在获取登录二维码，请稍候....")
     driver.get(url)
     time.sleep(1)

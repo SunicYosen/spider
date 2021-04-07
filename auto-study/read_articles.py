@@ -28,7 +28,8 @@ def get_article_urls(csv_filename):
     return article_urls
 
 # 阅读文章
-def read_articles(driver, csv_filename="articles.csv", read_mode=1):
+def read_articles(driver, csv_filename="data/articles.csv", read_mode=1):
+    csv_filename   = os.path.join(os.path.dirname(__file__), csv_filename)
     article_urls = get_article_urls(csv_filename)
 
     if not article_urls:
