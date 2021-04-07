@@ -1,3 +1,4 @@
+import os
 import time
 import re
 import base64
@@ -38,6 +39,7 @@ def get_qrcode_screen_pic(driver, url="https://pc.xuexi.cn/points/login.html", q
     time.sleep(1)
 
     login_qrcode  = driver.find_elements_by_id('qglogin')[0]
+    qrcode_path   = os.path.join(os.path.dirname(__file__), qrcode_path)
     driver.save_screenshot(qrcode_path)
     code_location = login_qrcode.location
     code_size     = login_qrcode.size

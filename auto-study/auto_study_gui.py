@@ -18,8 +18,9 @@ class AutoStudyGui(QWidget):
         self.args       = args
         self.is_login   = False
         self.load_ui()
-        self.xuexi_pic_path  = "icons/100th.png"
-        self.xuexi_logo_path = "icons/xuexi.png"
+        self.real_path  = os.path.split(os.path.realpath(__file__))[0]
+        self.xuexi_pic_path  = os.path.join(self.real_path, "icons/100th.png")
+        self.xuexi_logo_path = os.path.join(self.real_path, "icons/xuexi.png")
         self.setWindowIcon(QIcon(self.xuexi_logo_path))
         self.work_thread = WorkThread(self.args)
         self.work_thread.signal.connect(self.write)
@@ -40,7 +41,7 @@ class AutoStudyGui(QWidget):
         # self.init_driver()
 
     def load_ui(self):
-        ui_path = os.path.join(os.path.dirname(__file__), "auto_study.ui")        
+        ui_path = os.path.join(os.path.dirname(__file__), "auto_study.ui")
         uic.loadUi(ui_path,self)
 
     def write(self, info):
