@@ -31,12 +31,9 @@ def init_chromedriver(show_flag=False, cookies=[]):
     else:
         print('[-] ', str(platform.system()), 'not supported!')
         exit()
-
-    for cookie in cookies:
-        driver.add_cookie(cookie)
-    
-    if cookies:
-        print("[+]: Load cookie successfully!")
+        
+    # for cookie in cookies:
+    #     driver.add_cookie(cookie)
 
     return driver
 

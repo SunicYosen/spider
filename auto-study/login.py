@@ -73,8 +73,12 @@ def login_study(driver):
         return 1
 
 
-def check_login(driver, url="https://pc.xuexi.cn/points/login.html"):
+def check_login(driver, url="https://pc.xuexi.cn/points/login.html", cookies=[]):
     driver.get(url)
+    
+    for cookie in cookies:
+        driver.add_cookie(cookie)
+
     driver.execute_script("var q=document.documentElement.scrollTop={}".format(950))
     driver.execute_script("var q=document.documentElement.scrollLeft={}".format(225))
     time.sleep(2)

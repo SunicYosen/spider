@@ -27,8 +27,8 @@ class WorkThread(QThread):
 
     def __init__(self, args):
         super(WorkThread, self).__init__()
-        self.cookies = []
         self.redirect_stdout()
+        self.cookies  = []
         self.args     = args
         self.is_login = False
         self.load_cookie()
@@ -64,7 +64,7 @@ class WorkThread(QThread):
         self.is_driverd = True
     
     def login(self):
-        while check_login(self.driver, self.login_url):
+        while check_login(self.driver, self.login_url, self.cookies):
             self.qrcode_path = get_qrcode_screen_pic(self.driver, self.login_url)
             self.login_qrcode.emit(self.qrcode_path)
             login_study(self.driver)
