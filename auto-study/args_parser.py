@@ -30,6 +30,9 @@ def args_sparse():
     parser.add_argument('-a', "--all",  action='store_true',
                         help="Read Articles & Watch Videos & Do Exams & Get Score.")
     
+    parser.add_argument('-k', '--cookie',  default='data/cookie.json',
+                        help="Add cookie to driver")
+
     args = parser.parse_args()
 
     return args

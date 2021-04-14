@@ -1,7 +1,6 @@
-
+import os
 import sys
-import platform
-from selenium import webdriver
+import json
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -28,12 +27,11 @@ class WorkThread(QThread):
 
     def __init__(self, args):
         super(WorkThread, self).__init__()
+        self.cookies = []
         self.redirect_stdout()
-        if args.chrome:
-            self.args = ["c"]
-        else:
-            self.args = []
+        self.args     = args
         self.is_login = False
+        self.load_cookie()
         self.init_dirver()
 
     def redirect_stdout(self):
@@ -44,13 +42,25 @@ class WorkThread(QThread):
     def write(self, info):
         self.signal.emit(info)
 
+    def load_cookie(self):
+        self.cookie_path = os.path.join(os.path.dirname(__file__), self.args.cookie)
+        if os.path.exists(self.cookie_path):
+            try:
+                with open(self.cookie_path) as cookie_file:
+                    data = json.load(cookie_file)
+                    self.cookies = data['cookie']
+            except:
+                self.signal.emit("[+]: Load cookie: {} Failed！".format(self.cookie_path))
+
+    def update_cookie(self):
+        self.cookies = self.driver.get_cookies()
+
+    def save_cookies(self):
+        with open(self.cookie_path, 'w') as f:
+            json.dump({'cookie': list(self.cookies)}, f)
+
     def init_dirver(self):
-        if "c" in self.args:
-            show_flag = True
-        else:
-            show_flag = False
-        
-        self.driver = init_chromedriver(show_flag)
+        self.driver = init_chromedriver(self.args.chrome, cookies=self.cookies)
         self.is_driverd = True
     
     def login(self):
@@ -61,34 +71,46 @@ class WorkThread(QThread):
         self.name = get_user_name(self.driver, self.exam_url)
         self.is_login = True
         self.login_signal.emit(True)
+        self.update_cookie()
+        self.save_cookies()
 
     def read_articles(self):
         if self.is_login:
             read_articles(self.driver, read_mode=1)
+            self.update_cookie()
+            self.save_cookies()
         else:
             self.signal.emit("[-]: Error Read Articles. Please Login First!")
 
     def watch_videos(self):
         if self.is_login:
             watch_videos(self.driver)
+            self.update_cookie()
+            self.save_cookies()
         else:
             self.signal.emit("[-]: Error Watch Videos. Please Login First!")
 
     def daily_exam(self):
         if self.is_login:
             daily_exam(self.driver, self.exam_url)
+            self.update_cookie()
+            self.save_cookies()
         else:
             self.signal.emit("[-]: Error Daily Exam. Please Login First!")
 
     def weekly_exam(self):
         if self.is_login:
             weekly_exam(self.driver, self.exam_url)
+            self.update_cookie()
+            self.save_cookies()
         else:
             self.signal.emit("[-]: Error Weekly Exam. Please Login First!")
 
     def special_exam(self):
         if self.is_login:
             special_exam(self.driver, self.exam_url)
+            self.update_cookie()
+            self.save_cookies()
         else:
             self.signal.emit("[-]: Error Special Exam. Please Login First!")
 
@@ -96,6 +118,8 @@ class WorkThread(QThread):
         if self.is_login:
             score_list, score_titles = get_scores(self.driver, self.score_url)
             self.signal_score.emit([score_list, score_titles])
+            self.update_cookie()
+            self.save_cookies()
         else:
             self.signal.emit("[-]: Error Get Scores. Please Login First!")
 

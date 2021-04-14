@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.options import Options
 
 from get_usr_data_dir import get_usr_data_dir
 
-def init_chromedriver(show_flag=False):
+def init_chromedriver(show_flag=False, cookies=[]):
     chrome_options = Options()
     if not show_flag:
         chrome_options.add_argument('--headless')
@@ -31,6 +31,12 @@ def init_chromedriver(show_flag=False):
     else:
         print('[-] ', str(platform.system()), 'not supported!')
         exit()
+
+    for cookie in cookies:
+        driver.add_cookie(cookie)
+    
+    if cookies:
+        print("[+]: Load cookie successfully!")
 
     return driver
 
