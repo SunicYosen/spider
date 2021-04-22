@@ -22,3 +22,7 @@ Get Pingxiao Data from [http://agent.pingxiaobao.com/#/device/districtReport](ht
 
 Get fund data from [http://fund.eastmoney.com/](http://fund.eastmoney.com/)
 
+## [Google Search](google-search)
+
+Get links from google search.
+
