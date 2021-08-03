@@ -10,7 +10,7 @@ from get_industry_cat import get_industry_cat
 from write_excel import write_excel
 
 def main():
-    root_url       = 'https://www.caifuzhongwen.com/fortune500/paiming/global500/2020_%E4%B8%96%E7%95%8C500%E5%BC%BA.htm'
+    root_url       = 'https://www.caifuzhongwen.com/fortune500/paiming/global500/2021_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm'
     out_excel      = 'result.xlsx'
     
     industry_dict  = get_industry_cat(root_url)

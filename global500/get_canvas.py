@@ -8,6 +8,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
 def get_canvas(url, output_path='output/0'):
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
 
@@ -49,7 +52,7 @@ def get_canvas(url, output_path='output/0'):
     im_base64 = im_info.split(',')[1]
     im_bytes  = base64.b64decode(im_base64)
 
-    chart4_name = driver.find_element_by_xpath("/html/body/main/div/div[6]/div/git [4]/div/p").text
+    chart4_name = driver.find_element_by_xpath("/html/body/main/div/div[6]/div/div[4]/div/p").text
     image4_path  = os.path.join(str(output_path), str(company_name)+'_'+chart4_name+'.png').replace('&','')
     with open(image4_path, 'wb') as f:
         f.write(im_bytes)
@@ -70,5 +73,5 @@ def get_canvas(url, output_path='output/0'):
     driver.quit()
 
 if __name__ == '__main__':
-    url = 'https://www.caifuzhongwen.com/fortune500/gongsi/global500/2020/3.htm'
+    url = 'https://www.caifuzhongwen.com/fortune500/gongsi/global500/2021/3.htm'
     get_canvas(url)

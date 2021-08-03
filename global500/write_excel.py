@@ -9,8 +9,7 @@ def write_excel(industry_dict, company_list, out_file='result.xlsx'):
 
     for key in industry_dict:
         ws        = wb.create_sheet(str(industry_dict[key]))
-        menu_row  = ['', '', '', '销售额M$', '国家', '员工数', '营收', '% vs 上一年', '利润', '% vs上一年', '总资产', '股东权益']
-        ws.append([''])
+        menu_row  = ['2021年500强排名', '公司名', '销售额销售额\n百万美元', '国家', '员工数', '营收', '% vs 上一年', '利润', '% vs上一年', '总资产', '股东权益']
         ws.append(menu_row)
         # ws['D2'] = '销售额M$'
         # ws['E2'] = '国家'
@@ -24,17 +23,16 @@ def write_excel(industry_dict, company_list, out_file='result.xlsx'):
 
     for company in company_list:
         ws = wb.get_sheet_by_name(company.industry)
-        data_first_line = ['', company.rank, company.company_name, company.revenue, company.country, company.employee, company.revenue, company.revenue_change_percent, company.profit, company.profit_change_percent, company.total_money, company.shareholders_equity]
-        data_second_line = ['','',company.company_name_en]
+        data_first_line = [company.rank, company.company_name, company.revenue, company.country, company.employee, company.revenue, company.revenue_change_percent, company.profit, company.profit_change_percent, company.total_money, company.shareholders_equity]
         ws.append(data_first_line)
-        ws.append(data_second_line)
+        ws.append([''])
 
     wb.save(out_file)
 
     print("[+] Info: Write Excel Done!")
 
 if __name__ == '__main__':
-    root_url       = 'https://www.caifuzhongwen.com/fortune500/paiming/global500/2020_%E4%B8%96%E7%95%8C500%E5%BC%BA.htm'
+    root_url       = 'https://www.caifuzhongwen.com/fortune500/paiming/global500/2021_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm'
     industry_dict  = get_industry_cat(root_url)
     company_list   = get_data_global500(root_url)
     write_excel(industry_dict, company_list)
