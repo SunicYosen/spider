@@ -3,7 +3,7 @@ import json
 import requests
 from lxml import etree
 
-def get_industry_cat(root_url, cat_file='cat.json'):
+def get_industry_cat(root_url, cat_file='cat2021.json'):
     industry_cat_dict = {}
 
     got_cat = False
@@ -54,7 +54,10 @@ def get_industry_cat(root_url, cat_file='cat.json'):
 
 
 if __name__ == '__main__':
-    cat_dict = get_industry_cat("https://www.caifuzhongwen.com/fortune500/paiming/global500/2021_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm")
-    
-    for key in cat_dict:
-        print(str(key-1)+'\t: '+str(cat_dict[key]))
+    cat2021_dict = get_industry_cat("https://www.caifuzhongwen.com/fortune500/paiming/global500/2021_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm", cat_file='cat2021.json')
+    cat2020_dict = get_industry_cat("https://www.caifuzhongwen.com/fortune500/paiming/global500/2020_%E4%B8%96%E7%95%8C500%E5%BC%BA.htm", cat_file='cat2020.json')
+
+    assert cat2021_dict == cat2020_dict
+
+    for key in cat2021_dict:
+        print(str(key-1)+'\t: '+str(cat2021_dict[key]))
