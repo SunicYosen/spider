@@ -23,17 +23,19 @@ def get_data_load_file(data_json="data.json"):
             os.remove(data_json)
 
     for company in company_json_list:
-        company_list.append(Company(company))
+        company_class = Company()
+        company_class.set_data(company)
+        company_list.append(company_class)
 
     return company_list
 
 
-def get_data_global500(root_url, data_json="data.json"):
+def get_data_global500(root_url, data_json="data.json", url_tag=10):
     numbers           = 500
     index             = 0
     company_list      = []
     company_json_list = []
-    company_urls,name = get_url_global500(root_url, numbers)
+    company_urls,name = get_url_global500(root_url, numbers, tags_number=url_tag)
     time_begin        = time.time()
 
     got_data = False
@@ -114,8 +116,10 @@ def get_data_global500(root_url, data_json="data.json"):
     return company_list
 
 if __name__ == '__main__':
-   company_list = get_data_global500("https://www.caifuzhongwen.com/fortune500/paiming/global500/2021_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm")
-   for company in company_list:
+   company2021_list = get_data_global500("https://www.caifuzhongwen.com/fortune500/paiming/global500/2021_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm", data_json="data2021.json", url_tag=12)
+   company2020_list = get_data_global500("https://www.caifuzhongwen.com/fortune500/paiming/global500/2020_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm", data_json="data2020.json", url_tag=10)
+   
+   for company in company2020_list:
        print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format( \
                 company.rank,    company.industry,              company.company_name,company.company_name_en,       company.revenue, \
                 company.country, company.employee,              company.revenue,     company.revenue_change_percent, \

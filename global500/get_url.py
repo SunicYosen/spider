@@ -2,12 +2,13 @@
 Func: Get data of global-500
 '''
 
+from os import link
 from requests.models import Response
 from lxml import etree
 import requests
 import time
 
-def get_url_global500(root_url, numbers=500, pre_url='https://www.caifuzhongwen.com/fortune500/'):
+def get_url_global500(root_url, numbers=500, pre_url='https://www.caifuzhongwen.com/fortune500/', tags_number=10):
     link_array     = []
     name_array     = []
 
@@ -19,7 +20,11 @@ def get_url_global500(root_url, numbers=500, pre_url='https://www.caifuzhongwen.
         response.encoding = response.apparent_encoding
         data=response.text
         request_html          = etree.HTML(data)
-        rank_table = request_html.xpath("/html/body/main/div[1]/div[12]/div[2]/table/tbody")[0]
+
+        # 2021
+        # rank_table = request_html.xpath("/html/body/main/div[1]/div[12]/div[2]/table/tbody")[0]
+        # 2020
+        rank_table = request_html.xpath("/html/body/main/div[1]/div[{}]/div[2]/table/tbody".format(tags_number))[0]
 
         for i in range(numbers):
             company_rank    = rank_table.xpath('./tr[{}]/td[1]/i/text()'.format(i+2))[0]
@@ -38,5 +43,5 @@ def get_url_global500(root_url, numbers=500, pre_url='https://www.caifuzhongwen.
 
 
 if __name__ == '__main__':
-    link_array, name_array = get_url_global500("https://www.caifuzhongwen.com/fortune500/paiming/global500/2021_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm", 500)
-
+    link_array, name_array = get_url_global500("https://www.caifuzhongwen.com/fortune500/paiming/global500/2021_%e4%b8%96%e7%95%8c500%e5%bc%ba.htm", 500, tags_number=12)
+    # print(link_array)

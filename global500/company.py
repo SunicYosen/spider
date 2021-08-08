@@ -23,7 +23,10 @@ class Company:
     image2_suffix          = '历年排名'
     image3_suffix          = '历年总资产'
 
-    def __init__(self, data_dict) -> None:
+    def __init__(self) -> None:
+        pass
+
+    def set_data(self, data_dict) -> None:
         try:
             self.data_year              = data_dict['data_year']
             self.money_unit             = data_dict['money_unit']
