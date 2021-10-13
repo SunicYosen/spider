@@ -26,3 +26,6 @@ Get fund data from [http://fund.eastmoney.com/](http://fund.eastmoney.com/)
 
 Get links from google search.
 
+## [Taobao Search](taobao)
+
+Get items info from [Taobao](https://www.taobao.com/) with keyword.
