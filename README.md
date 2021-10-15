@@ -29,3 +29,7 @@ Get links from google search.
 ## [Taobao Search](taobao)
 
 Get items info from [Taobao](https://www.taobao.com/) with keyword.
+
+## [5lux](flux)
+
+Get items from [5flux](http://www.5lux.com/).
