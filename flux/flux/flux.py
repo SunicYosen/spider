@@ -122,7 +122,7 @@ class Flux:
             print("[-] Get name failed from: {}".format(url))
 
         try:
-            price = self.driver.find_by_class_name("fsk_goods_price").get_text().replace('\n', '').replace(' ', '').strip()
+            price = self.driver.find_by_class_name("fsk_goods_price").get_text().replace('\n', '').replace(' ', '').replace('\r', '').strip()
         except:
             print("[-] Get price failed from: {}".format(url))
 
