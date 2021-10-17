@@ -163,8 +163,9 @@ class Flux:
 
     def write_excel(self, excel, excel_title, sheet_name = "5LUX"):
         excel.write(sheet_name, excel_title)
+        brand_data = []
         for brand in self.brands_dict.keys():
-            brand_data = []
+            # brand_data = []
             for item in self.brands_dict[brand]["items"]:
                 item_info = [brand]
                 for title in excel_title[1:]:
@@ -172,4 +173,4 @@ class Flux:
 
                 brand_data.append(item_info)
 
-            excel.write_list(sheet_name, brand_data)
+        excel.write_list(sheet_name, brand_data)
